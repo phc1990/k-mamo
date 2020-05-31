@@ -1,10 +1,11 @@
-package com.github.phc1990.kmamo
+package com.github.phc1990.kmamo.algorithm
 
 import com.github.phc1990.kmamo.space.Space
 
 interface Mamo<V: Space<Any>, O: Space<Any>> {
-    fun addVariable(variable: V): Mamo<V,O>
-    fun addObjective(objective: O): Mamo<V,O>
+
+    fun addVariable(variable: V): Mamo<V, O>
+    fun addObjective(objective: O): Mamo<V, O>
     fun solve(evaluator: (evaluationBroker: EvaluationBroker) -> Unit,
               processor: (evaluation: Evaluation) -> Unit = {})
 }

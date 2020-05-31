@@ -15,9 +15,6 @@ package com.github.phc1990.kmamo.space
  */
 interface Space<T> {
 
-    /** The name of the instance. */
-    val name: String
-
     /** Returns a random-uniformly distributed object of the set. */
     fun uniform(): T
 }

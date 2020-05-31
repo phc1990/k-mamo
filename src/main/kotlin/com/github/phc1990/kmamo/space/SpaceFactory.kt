@@ -11,7 +11,7 @@ import kotlin.math.roundToInt
  * @see IntegerInterval
  * @see BooleanSpace
  *
- * @author Pau Hebrero Casasayas- May 26, 2020
+ * @author Pau Hebrero Casasayas - May 26, 2020
  */
 abstract class SpaceFactory  {
 
@@ -19,24 +19,28 @@ abstract class SpaceFactory  {
 
         /**
          * Creates a new space representing a double interval bounded by [lowerBoundary] and [upperBoundary]
-         * (e.g. [-1,1]). */
-        fun getDoubleInterval(name: String, lowerBoundary: Double, upperBoundary: Double): DoubleInterval =
-                DoubleInterval(name, lowerBoundary, upperBoundary)
+         * (e.g. {-1,1}). */
+        fun getDoubleInterval(lowerBoundary: Double, upperBoundary: Double): DoubleInterval =
+                DoubleInterval(lowerBoundary, upperBoundary)
 
         /**
          * Creates a new space representing an integer interval bounded by [lowerBoundary] and [upperBoundary]
-         * (e.g. [0-10].
+         * (e.g. {0-10}).
          */
-        fun getIntegerInterval(name: String, lowerBoundary: Int, upperBoundary: Int): IntegerInterval =
-                IntegerInterval(name, lowerBoundary, upperBoundary)
+        fun getIntegerInterval(lowerBoundary: Int, upperBoundary: Int): IntegerInterval =
+                IntegerInterval(lowerBoundary, upperBoundary)
 
         /** Creates a new boolean space (i.e. {false, true}). */
-        fun getBooleanSpace(name: String): BooleanSpace = BooleanSpace(name)
+        fun getBooleanSpace(): BooleanSpace = BooleanSpace()
+
+        /** Creates a new char space (e.g.e {A,B,C,...,X,Y,Z}). */
+        fun getCharSpace(charSequence: CharSequence): CharSpace = CharSpace(charSequence)
+
     }
 }
 
 /**
- * A [Space] representing a real interval (e.g. [-0.1,0.1]).
+ * A [Space] representing a real interval (e.g. {-0.1,0.1}).
  *
  * References:
  * - [https://en.wikipedia.org/wiki/Interval_(mathematics)#Integer_intervals](https://en.wikipedia.org/wiki/Interval_(mathematics)#Integer_intervals)
@@ -45,9 +49,9 @@ abstract class SpaceFactory  {
  * @see MetricSpace
  * @see BoundedSpace
  *
- * @author Pau Hebrero Casasayas- May 25, 2020
+ * @author Pau Hebrero Casasayas - May 25, 2020
  */
-class DoubleInterval(override val name: String, override val lowerBoundary: Double, override val upperBoundary: Double):
+class DoubleInterval(override val lowerBoundary: Double, override val upperBoundary: Double):
         LinearSpace<Double>, MetricSpace<Double>, BoundedSpace<Double> {
 
     init {
@@ -72,10 +76,9 @@ class DoubleInterval(override val name: String, override val lowerBoundary: Doub
  * @see MetricSpace
  * @see BoundedSpace
  *
- * @author Pau Hebrero Casasayas- May 25, 2020
+ * @author Pau Hebrero Casasayas - May 25, 2020
  */
-class IntegerInterval(override val name: String,
-                      override val lowerBoundary: Int, override val upperBoundary: Int,
+class IntegerInterval(override val lowerBoundary: Int, override val upperBoundary: Int,
                       private val size: Int = upperBoundary + 1 - lowerBoundary):
         FiniteSpace<Int>, LinearSpace<Int>, MetricSpace<Int>, BoundedSpace<Int> {
 
@@ -95,9 +98,9 @@ class IntegerInterval(override val name: String,
  *
  * @see FiniteSpace
  * @see FlipSpace
- * @author Pau Hebrero Casasayas- May 25, 2020
+ * @author Pau Hebrero Casasayas - May 25, 2020
  */
-class BooleanSpace(override val name: String): FiniteSpace<Boolean>, FlipSpace<Boolean> {
+class BooleanSpace: FiniteSpace<Boolean>, FlipSpace<Boolean> {
 
     override fun size(): Int = 2
     override fun get(i: Int): Boolean = i == 1
@@ -105,15 +108,15 @@ class BooleanSpace(override val name: String): FiniteSpace<Boolean>, FlipSpace<B
 }
 
 /**
- * A [Space] constituded by a finite number of possibilities.
+ * A [Space] constituted by a finite number of possibilities.
  *
  * @see FiniteSpace
- * @author Pau Hebrero Casasayas- May 28, 2020
+ * @author Pau Hebrero Casasayas - May 28, 2020
  */
-class ListedSpace<T>(override val name: String, val values: List<T>): FiniteSpace<T> {
+class ListedSpace<T>(val values: List<T>): FiniteSpace<T> {
 
     /** Constructor. */
-    constructor(name: String, vararg values: T): this(name, values.toList())
+    constructor(vararg values: T): this(values.toList())
 
     init {
         if (values.isEmpty()) throw IllegalArgumentException("List cannot be empty.")
@@ -121,5 +124,18 @@ class ListedSpace<T>(override val name: String, val values: List<T>): FiniteSpac
 
     override fun size(): Int = values.size
     override fun get(i: Int): T = values[i]
+}
+
+/**
+ * A [Space] constituted by a set of characters.
+ *
+ * @see FiniteSpace
+ * @author Pau Hebrero Casasayas - May 30, 2020
+ */
+class CharSpace(val charSequence: CharSequence): FiniteSpace<Char> {
+
+    override fun size(): Int = charSequence.length
+    override fun get(i: Int): Char = charSequence[i]
+
 }
 
