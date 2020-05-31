@@ -13,7 +13,7 @@ package com.github.phc1990.kmamo.space
  *
  * @author Pau Hebrero Casasayas- May 24, 2020
  */
-interface Space<T> {
+interface Space<out T> {
 
     /** Returns a random-uniformly distributed object of the set. */
     fun uniform(): T
