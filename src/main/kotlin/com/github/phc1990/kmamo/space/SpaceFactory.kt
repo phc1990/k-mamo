@@ -10,7 +10,6 @@ import kotlin.math.roundToInt
  * @see DoubleInterval
  * @see IntegerInterval
  * @see BooleanSpace
- *
  * @author Pau Hebrero Casasayas - May 26, 2020
  */
 abstract class SpaceFactory  {
@@ -49,7 +48,6 @@ abstract class SpaceFactory  {
  * @see LinearSpace
  * @see MetricSpace
  * @see BoundedSpace
- *
  * @author Pau Hebrero Casasayas - May 25, 2020
  */
 class DoubleInterval(override val lowerBoundary: Double, override val upperBoundary: Double):
@@ -76,7 +74,6 @@ class DoubleInterval(override val lowerBoundary: Double, override val upperBound
  * @see LinearSpace
  * @see MetricSpace
  * @see BoundedSpace
- *
  * @author Pau Hebrero Casasayas - May 25, 2020
  */
 class IntegerInterval(override val lowerBoundary: Int, override val upperBoundary: Int,

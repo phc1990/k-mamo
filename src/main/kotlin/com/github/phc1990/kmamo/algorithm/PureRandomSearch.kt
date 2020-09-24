@@ -13,7 +13,6 @@ class PureRandomSearch(val maxIterations: Int): Algorithm {
 
     private val variables: MutableMap<Any, Any> = mutableMapOf()
     private val objectives: MutableList<Objective> = mutableListOf()
-    private var iterationIndex = 0
     private lateinit var best: InternalCandidate
 
     fun <T, S: FiniteSpace<T>> addVariable(name: String, space: S): Variable<T> =
@@ -38,8 +37,10 @@ class PureRandomSearch(val maxIterations: Int): Algorithm {
                 best = candidate
             }
 
-            val iteration = InternalIteration(i, i == maxIterations - 1, listOf(best))
+            val iteration = InternalIteration(i, listOf(best), i == maxIterations - 1)
             processor.process(iteration)
+
+            if (iteration.isStop()) {break}
         }
 
 

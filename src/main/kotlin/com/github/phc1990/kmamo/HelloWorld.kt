@@ -15,7 +15,7 @@ class HelloWorld {
 
             Random.setSeed(0)
 
-            val word = "HELLO!"
+            val word = "HI!"
             val charSpace = SpaceFactory.getCharSpace("ABCDEFGHIJKLMNOPQRSTUVWXYZ !")
             val algorithm = PureRandomSearch(10000000)
 
@@ -26,9 +26,10 @@ class HelloWorld {
                 for (i in variables.indices) {
                     if (candidate.getVariable(variables[i]) == word[i]) { score++ } }
                 candidate.setObjective(objective, score)
-            }, {iteration -> if (iteration.stopped) {
-                    var string = ""
-                    variables.forEach{v -> string += iteration.candidates[0].getVariable(v)}
+            }, {iteration -> var string = ""
+                variables.forEach{v -> string += iteration.candidates[0].getVariable(v)}
+                if (string == word) { iteration.forceStop() }
+                if (iteration.isStop()) {
                     println("Iteration ${iteration.candidates[0].iterationIndex}: $string")
                 }
             })
