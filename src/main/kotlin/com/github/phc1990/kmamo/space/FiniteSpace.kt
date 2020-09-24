@@ -21,5 +21,5 @@ interface FiniteSpace<T>: Space<T> {
     /** Index access operation. */
     operator fun get(i: Int): T
 
-    override fun uniform() = this[Random.uniformBoolean(size())]
+    override fun uniform() = this[Random.uniformInteger(size())]
 }

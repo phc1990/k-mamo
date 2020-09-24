@@ -32,5 +32,5 @@ interface LinearSpace<T>: Space<T> {
     fun subtract(t1: T, t2: T): T = add(t1, negate(t2))
 
     /** Returns the resulting instance of dividing (i.e. scaling by 1/[scalar]) an object of the set. */
-    fun divide(scalar: Double, t:T): T = scale(1/scalar, t)
+    fun divide(scalar: Double, t:T): T = scale(1.0/scalar, t)
 }

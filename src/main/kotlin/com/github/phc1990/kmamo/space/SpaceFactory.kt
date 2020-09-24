@@ -17,23 +17,24 @@ abstract class SpaceFactory  {
 
     companion object {
 
-        /**
-         * Creates a new space representing a double interval bounded by [lowerBoundary] and [upperBoundary]
-         * (e.g. {-1,1}). */
+        /** Creates a [DoubleInterval] bounded by [lowerBoundary] and [upperBoundary] (e.g. {-1,1}). */
         fun getDoubleInterval(lowerBoundary: Double, upperBoundary: Double): DoubleInterval =
                 DoubleInterval(lowerBoundary, upperBoundary)
 
-        /**
-         * Creates a new space representing an integer interval bounded by [lowerBoundary] and [upperBoundary]
-         * (e.g. {0-10}).
-         */
+        /** Creates a [IntegerInterval] bounded by [lowerBoundary] and [upperBoundary] (e.g. {0-10}). */
         fun getIntegerInterval(lowerBoundary: Int, upperBoundary: Int): IntegerInterval =
                 IntegerInterval(lowerBoundary, upperBoundary)
 
-        /** Creates a new boolean space (i.e. {false, true}). */
+        /** Creates a [BooleanSpace] (i.e. {false, true}). */
         fun getBooleanSpace(): BooleanSpace = BooleanSpace()
 
-        /** Creates a new char space (e.g.e {A,B,C,...,X,Y,Z}). */
+        /** Creates a [ListedSpace] (i.e. {'Monday','Tuesday',...,'Sunday'}). */
+        fun <T> getListedSpace(values: List<T>): ListedSpace<T> = ListedSpace<T>(values)
+
+        /** Creates a [ListedSpace] (i.e. {'Monday','Tuesday',...,'Sunday'}). */
+        fun <T> getListedSpace(vararg values: T): ListedSpace<T> = getListedSpace(values.toList())
+
+        /** Creates a [CharSpace] (e.g.e {A,B,C,...,X,Y,Z}). */
         fun getCharSpace(charSequence: CharSequence): CharSpace = CharSpace(charSequence)
 
     }
@@ -55,7 +56,7 @@ class DoubleInterval(override val lowerBoundary: Double, override val upperBound
         LinearSpace<Double>, MetricSpace<Double>, BoundedSpace<Double> {
 
     init {
-        if (lowerBoundary > upperBoundary) throw java.lang.IllegalArgumentException("Boundaries are not consistent.")
+        if (lowerBoundary > upperBoundary) throw IllegalArgumentException("Interval boundaries are not consistent.")
     }
 
     override fun scale(scalar: Double, t: Double): Double = scalar * t
@@ -83,7 +84,7 @@ class IntegerInterval(override val lowerBoundary: Int, override val upperBoundar
         FiniteSpace<Int>, LinearSpace<Int>, MetricSpace<Int>, BoundedSpace<Int> {
 
     init {
-        if (lowerBoundary > upperBoundary) throw java.lang.IllegalArgumentException("Boundaries are not consistent.")
+        if (lowerBoundary > upperBoundary) throw IllegalArgumentException("Interval boundaries are not consistent.")
     }
 
     override fun size() = size
@@ -115,9 +116,6 @@ class BooleanSpace: FiniteSpace<Boolean>, FlipSpace<Boolean> {
  */
 class ListedSpace<T>(val values: List<T>): FiniteSpace<T> {
 
-    /** Constructor. */
-    constructor(vararg values: T): this(values.toList())
-
     init {
         if (values.isEmpty()) throw IllegalArgumentException("List cannot be empty.")
     }
@@ -134,8 +132,11 @@ class ListedSpace<T>(val values: List<T>): FiniteSpace<T> {
  */
 class CharSpace(val charSequence: CharSequence): FiniteSpace<Char> {
 
+    init {
+        if (charSequence.isEmpty()) throw IllegalArgumentException("Character sequence cannot be empty.")
+    }
+
     override fun size(): Int = charSequence.length
     override fun get(i: Int): Char = charSequence[i]
-
 }
 

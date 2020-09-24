@@ -20,7 +20,7 @@ interface Variable<T> {
  * @see Variable
  * @author Pau Hebrero Casasayas - May 31, 2020
  */
-abstract class VariableFactory {
+internal abstract class VariableFactory {
 
     companion object {
 
@@ -28,7 +28,6 @@ abstract class VariableFactory {
         fun <T, S: Space<T>> get(name: String, space: S): Variable<T> = DefaultVariable(name)
 
         /** Default implementation of [Variable], used by the [VariableFactory]. */
-        private data class DefaultVariable<T>(override val name: String): Variable<T>
+        private class DefaultVariable<T>(override val name: String): Variable<T>
     }
-
 }

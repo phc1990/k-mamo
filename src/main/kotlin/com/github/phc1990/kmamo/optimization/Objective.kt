@@ -29,3 +29,22 @@ enum class OptimizationCriterion {
     MAXIMIZE
 
 }
+
+/**
+ * A [Objective] factory.
+ *
+ * @see Objective
+ * @author Pau Hebrero Casasayas - May 31, 2020
+ */
+internal abstract class ObjectiveFactory {
+
+    companion object {
+
+        /** Returns a new instance of [Objective]. */
+        fun get(name: String, criterion: OptimizationCriterion): Objective = DefaultObjective(name, criterion)
+
+        /** Default implementation of [Objective], used by the [ObjectiveFactory]. */
+        private class DefaultObjective(override val name: String,
+                                       override val criterion: OptimizationCriterion): Objective
+    }
+}

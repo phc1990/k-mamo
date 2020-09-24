@@ -10,14 +10,17 @@ import java.util.Random
 object Random {
 
     /** The underlying random instance. */
-    var RANDOM = Random()
+    private val random = Random()
+
+    /** Sets the [seed] of the random generator. */
+    fun setSeed(seed: Long) = random.setSeed(seed)
 
     /** Returns a random uniformly-distributed double in the {0,1} interval. */
-    fun uniformDouble(): Double = RANDOM.nextDouble()
+    fun uniformDouble(): Double = random.nextDouble()
 
-    /** Returns a random uniformly distributed integer in the {0, [max]} interval (excluding [max]. */
-    fun uniformBoolean(max: Int) = RANDOM.nextInt(max)
+    /** Returns a random uniformly distributed integer in the {0, [max]} interval (excluding [max]). */
+    fun uniformInteger(max: Int) = random.nextInt(max)
 
     /** Returns a random uniformly distributed boolean in the {false, true} interval. */
-    fun uniformBoolean(): Boolean = RANDOM.nextBoolean()
+    fun uniformBoolean(): Boolean = random.nextBoolean()
 }
