@@ -14,6 +14,7 @@ class HelloWorld {
         fun main(args: Array<String>) {
 
             Random.setSeed(0)
+            PureRandomSearch(1, "asdf")
 
             val word = "HI!"
             val charSpace = SpaceFactory.getCharSpace("ABCDEFGHIJKLMNOPQRSTUVWXYZ !")

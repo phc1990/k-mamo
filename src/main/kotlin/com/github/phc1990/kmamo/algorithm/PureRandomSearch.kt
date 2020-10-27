@@ -4,18 +4,21 @@ import com.github.phc1990.kmamo.optimization.*
 import com.github.phc1990.kmamo.optimization.ObjectiveFactory
 import com.github.phc1990.kmamo.optimization.VariableFactory
 import com.github.phc1990.kmamo.space.FiniteSpace
-import com.github.phc1990.kmamo.space.MetricSpace
 import com.github.phc1990.kmamo.space.Space
-import com.google.common.collect.ImmutableList
-import kotlin.math.max
 
-class PureRandomSearch(val maxIterations: Int): Algorithm {
+/**
+ * Pure Random Search algorithm.
+ *
+ * @author Pau Hebrero Casasayas - Jun 1, 2020
+ */
+class PureRandomSearch(private val maxIterations: Int ? = null): Algorithm {
 
-    private val variables: MutableMap<Any, Any> = mutableMapOf()
+    override val name: String = "Pure Random Search"
+    private val variables: MutableMap<Variable<*>, Any> = mutableMapOf()
     private val objectives: MutableList<Objective> = mutableListOf()
     private lateinit var best: InternalCandidate
 
-    fun <T, S: FiniteSpace<T>> addVariable(name: String, space: S): Variable<T> =
+    fun <T, S: Space<T>> addVariable(name: String, space: S): Variable<T> =
         VariableFactory.get(name, space).also { variables[it] = space }
 
     fun addObjective(name: String, criterion: OptimizationCriterion): Objective =
@@ -23,12 +26,14 @@ class PureRandomSearch(val maxIterations: Int): Algorithm {
 
     override fun solve(evaluator: BlackBoxEvaluator, processor: IterationProcessor) {
 
-        for (i in 0 until maxIterations) {
+        var i = 0
+        var stop = false
+        while (!stop) {
 
-            val candidate = InternalCandidate(i, i,
-                    variables.entries.associate { e -> Pair(e.key, (e.value as Space<Any>).uniform())})
-            evaluator.evaluate(candidate)
+            // Initialise new candidate
+            val candidate = InternalCandidate.uniform(i, i, variables)
 
+            // Compare against best candidate
             if (this::best.isInitialized) {
                 val candidateValue = candidate.objectives.values.toList()[0]
                 val bestValue = best.objectives.values.toList()[0]
@@ -37,13 +42,11 @@ class PureRandomSearch(val maxIterations: Int): Algorithm {
                 best = candidate
             }
 
-            val iteration = InternalIteration(i, listOf(best), i == maxIterations - 1)
-            processor.process(iteration)
-
-            if (iteration.isStop()) {break}
+            // Process iteration
+            maxIterations?.let { stop = (i >= maxIterations - 1) }
+            val iteration = InternalIteration(i, listOf(best), stop)
+            if (processor.process(iteration)) {stop = true}
+            i++
         }
-
-
     }
-
 }
