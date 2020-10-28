@@ -3,7 +3,7 @@ package com.github.phc1990.kmamo.optimization
 /**
  * An algorithm.
  *
- * @author Pau Hebrero Casasayas - Jun 1, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 interface Algorithm {
 
@@ -32,11 +32,11 @@ interface Algorithm {
 /**
  * A Black-box candidate evaluator. The purpose of these instances is:
  *
- * 1. Receive an [UnevaluatedCandidate] solution
+ * 1. Receive an cancidate solution
  * 2. Evaluate the objective functions (´black-box´ evaluation)
  * 3. Set the objectives values to the candidate solution
  *
- * @author Pau Hebrero Casasayas - Jun 1, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 interface BlackBoxEvaluator {
     fun evaluate(candidate: Candidate)
@@ -49,7 +49,7 @@ interface BlackBoxEvaluator {
  * 2. Handle the iteration (e.g. print it, dump it to a file, plot it, etc.)
  *
  * @see Iteration
- * @author Pau Hebrero Casasayas - Jun 1, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 interface IterationProcessor {
 

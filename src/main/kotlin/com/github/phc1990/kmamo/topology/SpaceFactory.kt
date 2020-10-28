@@ -1,4 +1,4 @@
-package com.github.phc1990.kmamo.space
+package com.github.phc1990.kmamo.topology
 
 import com.github.phc1990.kmamo.Random
 import kotlin.math.absoluteValue
@@ -10,7 +10,7 @@ import kotlin.math.roundToInt
  * @see DoubleInterval
  * @see IntegerInterval
  * @see BooleanSpace
- * @author Pau Hebrero Casasayas - May 26, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 26, 2020
  */
 abstract class SpaceFactory  {
 
@@ -48,19 +48,30 @@ abstract class SpaceFactory  {
  * @see LinearSpace
  * @see MetricSpace
  * @see BoundedSpace
- * @author Pau Hebrero Casasayas - May 25, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 25, 2020
  */
-class DoubleInterval(override val lowerBoundary: Double, override val upperBoundary: Double):
+class DoubleInterval(override val lowerBoundary: Double, override val upperBoundary: Double,
+                     private val neighborhoodRadius: Double? = null):
         LinearSpace<Double>, MetricSpace<Double>, BoundedSpace<Double> {
 
     init {
         if (lowerBoundary > upperBoundary) throw IllegalArgumentException("Interval boundaries are not consistent.")
+        neighborhoodRadius?.let { if (it <= 0) throw IllegalArgumentException("Neighborhood radius has to be greater than 0.") }
     }
 
     override fun scale(scalar: Double, t: Double): Double = scalar * t
     override fun add(t1: Double, t2: Double): Double = t1 + t2
     override fun uniform(): Double = lowerBoundary + Random.uniformDouble() * (upperBoundary - lowerBoundary)
     override fun metric(t1: Double, t2: Double): Double = (t1 - t2).absoluteValue
+    override fun neighbors(t: Double): List<Double> {
+        neighborhoodRadius?.let {
+            val neighbors = mutableListOf<Double>()
+            clip(t - neighborhoodRadius).also { if (it != lowerBoundary && it != upperBoundary) neighbors.add(it) }
+            clip(t + neighborhoodRadius).also { if (it != lowerBoundary && it != upperBoundary) neighbors.add(it) }
+            return neighbors
+        }
+        return emptyList()
+    }
 }
 
 /**
@@ -74,7 +85,7 @@ class DoubleInterval(override val lowerBoundary: Double, override val upperBound
  * @see LinearSpace
  * @see MetricSpace
  * @see BoundedSpace
- * @author Pau Hebrero Casasayas - May 25, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 25, 2020
  */
 class IntegerInterval(override val lowerBoundary: Int, override val upperBoundary: Int,
                       private val size: Int = upperBoundary + 1 - lowerBoundary):
@@ -96,7 +107,7 @@ class IntegerInterval(override val lowerBoundary: Int, override val upperBoundar
  *
  * @see FiniteSpace
  * @see FlipSpace
- * @author Pau Hebrero Casasayas - May 25, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 25, 2020
  */
 class BooleanSpace: FiniteSpace<Boolean>, FlipSpace<Boolean> {
 
@@ -109,7 +120,7 @@ class BooleanSpace: FiniteSpace<Boolean>, FlipSpace<Boolean> {
  * A [Space] constituted by a finite number of possibilities.
  *
  * @see FiniteSpace
- * @author Pau Hebrero Casasayas - May 28, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 28, 2020
  */
 class ListedSpace<T>(val values: List<T>): FiniteSpace<T> {
 
@@ -125,7 +136,7 @@ class ListedSpace<T>(val values: List<T>): FiniteSpace<T> {
  * A [Space] constituted by a set of characters.
  *
  * @see FiniteSpace
- * @author Pau Hebrero Casasayas - May 30, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 30, 2020
  */
 class CharSpace(val charSequence: CharSequence): FiniteSpace<Char> {
 

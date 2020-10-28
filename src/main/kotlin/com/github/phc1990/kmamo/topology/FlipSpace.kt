@@ -1,11 +1,11 @@
-package com.github.phc1990.kmamo.space
+package com.github.phc1990.kmamo.topology
 
 /**
  * A flip [Space]. Besides the inherited operations, its structure also supports:
  * - flip operation
  *
  * @see Space
- * @author Pau Hebrero Casasayas- May 25, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990)- May 25, 2020
  */
 interface FlipSpace<T> : Space<T> {
 

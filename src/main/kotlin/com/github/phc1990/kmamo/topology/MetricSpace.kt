@@ -1,4 +1,4 @@
-package com.github.phc1990.kmamo.space
+package com.github.phc1990.kmamo.topology
 
 /**
  * A metric [Space]. Its structure supports:
@@ -8,7 +8,7 @@ package com.github.phc1990.kmamo.space
  * - [https://en.wikipedia.org/wiki/Metric_space](https://en.wikipedia.org/wiki/Metric_space)
  *
  * @see Space
- * @author Pau Hebrero Casasayas - May 26, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 26, 2020
  */
 interface MetricSpace<T>: Space<T> {
 

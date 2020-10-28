@@ -1,4 +1,4 @@
-package com.github.phc1990.kmamo.space
+package com.github.phc1990.kmamo.topology
 
 import com.github.phc1990.kmamo.Random
 
@@ -11,7 +11,7 @@ import com.github.phc1990.kmamo.Random
  * - [https://en.wikipedia.org/wiki/Finite_topological_space](https://en.wikipedia.org/wiki/Finite_topological_space)
  *
  * @see Space
- * @author Pau Hebrero Casasayas - May 24, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 24, 2020
  */
 interface FiniteSpace<T>: Space<T> {
 

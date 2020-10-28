@@ -1,11 +1,11 @@
 package com.github.phc1990.kmamo.optimization
 
-import com.github.phc1990.kmamo.space.Space
+import com.github.phc1990.kmamo.topology.Space
 
 /**
  * A candidate solution.
  *
- * @author Pau Hebrero Casasayas - Jun 1, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 interface Candidate {
 
@@ -35,7 +35,7 @@ interface Candidate {
  * Internal [Candidate] implementation.
  *
  * @see Candidate
- * @author Pau Hebrero Casasayas - Jun 1, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 internal class InternalCandidate(override val iterationIndex: Int, override val candidateIndex: Int,
                                  private val variables: Map<Variable<*>, Any>): Candidate {

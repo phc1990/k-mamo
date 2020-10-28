@@ -3,7 +3,7 @@ package com.github.phc1990.kmamo.optimization
 /**
  * An optimization variable.
  *
- * @author Pau Hebrero Casasayas - May 31, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 31, 2020
  */
 interface Objective {
 
@@ -18,7 +18,7 @@ interface Objective {
 /**
  * Optimization criterion.
  *
- * @author Pau Hebrero Casasayas - May 31, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 31, 2020
  */
 enum class OptimizationCriterion {
 
@@ -34,7 +34,7 @@ enum class OptimizationCriterion {
  * A [Objective] factory.
  *
  * @see Objective
- * @author Pau Hebrero Casasayas - May 31, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 31, 2020
  */
 internal abstract class ObjectiveFactory {
 

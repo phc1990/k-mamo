@@ -1,4 +1,4 @@
-package com.github.phc1990.kmamo.space
+package com.github.phc1990.kmamo.topology
 
 /**
  * An ordered [Space]. Its structure supports:
@@ -8,6 +8,6 @@ package com.github.phc1990.kmamo.space
  * - [https://en.wikipedia.org/wiki/Total_order](https://en.wikipedia.org/wiki/Total_order)
  *
  * @see Space
- * @author Pau Hebrero Casasayas - May 25, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 25, 2020
  */
 interface OrderedSpace<T: Comparable<T>>: Space<T>

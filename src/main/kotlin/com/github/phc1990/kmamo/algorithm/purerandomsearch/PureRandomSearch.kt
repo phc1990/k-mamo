@@ -1,14 +1,14 @@
-package com.github.phc1990.kmamo.algorithm
+package com.github.phc1990.kmamo.algorithm.purerandomsearch
 
 import com.github.phc1990.kmamo.optimization.*
 import com.github.phc1990.kmamo.optimization.ObjectiveFactory
 import com.github.phc1990.kmamo.optimization.VariableFactory
-import com.github.phc1990.kmamo.space.Space
+import com.github.phc1990.kmamo.topology.Space
 
 /**
  * Pure Random Search algorithm.
  *
- * @author Pau Hebrero Casasayas - Jun 1, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 class PureRandomSearch(private val maxIterations: Int ? = null): Algorithm {
 

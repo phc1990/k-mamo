@@ -1,4 +1,4 @@
-package com.github.phc1990.kmamo.space
+package com.github.phc1990.kmamo.topology
 
 /**
  * A linear [Space] (a.k.a. vector space). Besides the inherited operations, its structure also supports Linear Algebra
@@ -15,7 +15,7 @@ package com.github.phc1990.kmamo.space
  * - [https://en.wikipedia.org/wiki/Vector_space](https://en.wikipedia.org/wiki/Vector_space)
  *
  * @see Space
- * @author Pau Hebrero Casasayas - May 24, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 24, 2020
  */
 interface LinearSpace<T>: Space<T> {
 

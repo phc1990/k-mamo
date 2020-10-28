@@ -5,7 +5,7 @@ import java.util.Random
 /**
  * Singleton used for all random operations.
  *
- * @author Pau Hebrero Casasayas - May 25, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 25, 2020
  */
 object Random {
 

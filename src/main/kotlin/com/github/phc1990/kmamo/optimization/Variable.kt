@@ -1,12 +1,12 @@
 package com.github.phc1990.kmamo.optimization
 
-import com.github.phc1990.kmamo.space.Space
+import com.github.phc1990.kmamo.topology.Space
 
 /**
  * An optimisation variable.
  *
  * @param T the variable type (e.g. [Double])
- * @author Pau Hebrero Casasayas - May 31, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 31, 2020
  */
 interface Variable<T> {
 
@@ -18,7 +18,7 @@ interface Variable<T> {
  * A [Variable] factory.
  *
  * @see Variable
- * @author Pau Hebrero Casasayas - May 31, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 31, 2020
  */
 internal abstract class VariableFactory {
 

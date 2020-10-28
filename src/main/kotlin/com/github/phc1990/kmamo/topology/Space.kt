@@ -1,4 +1,4 @@
-package com.github.phc1990.kmamo.space
+package com.github.phc1990.kmamo.topology
 
 /**
  * A mathematical space. A mathematical space is constituted by:
@@ -11,10 +11,13 @@ package com.github.phc1990.kmamo.space
  * - [https://en.wikipedia.org/wiki/Set_(mathematics)](https://en.wikipedia.org/wiki/Set_(mathematics))
  * - [https://en.wikipedia.org/wiki/Mathematical_structure](https://en.wikipedia.org/wiki/Mathematical_structure)
  *
- * @author Pau Hebrero Casasayas- May 24, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990)- May 24, 2020
  */
 interface Space<T> {
 
     /** Returns a random-uniformly distributed object of the set. */
     fun uniform(): T
+
+    /** Returns the neighbors of [t]. */
+    fun neighbors(t: T): List<T>
 }

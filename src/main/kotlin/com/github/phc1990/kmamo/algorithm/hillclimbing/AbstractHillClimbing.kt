@@ -4,8 +4,8 @@ import com.github.phc1990.kmamo.optimization.*
 import com.github.phc1990.kmamo.optimization.InternalCandidate
 import com.github.phc1990.kmamo.optimization.InternalIteration
 import com.github.phc1990.kmamo.optimization.VariableFactory
-import com.github.phc1990.kmamo.space.LinearSpace
-import com.github.phc1990.kmamo.space.NeighborSpace
+import com.github.phc1990.kmamo.topology.LinearSpace
+import com.github.phc1990.kmamo.topology.NeighborSpace
 
 abstract class AbstractHillClimbing(private val objective: Objective, private val maxIterations: Int? = null): Algorithm {
 

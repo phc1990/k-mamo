@@ -1,4 +1,4 @@
-package com.github.phc1990.kmamo.space
+package com.github.phc1990.kmamo.topology
 
 /**
  * A bounded [OrderedSpace]. Besides the inherited operations, its structure also supports:
@@ -8,7 +8,7 @@ package com.github.phc1990.kmamo.space
  * - [https://en.wikipedia.org/wiki/Ordered_vector_space](https://en.wikipedia.org/wiki/Ordered_vector_space)
  *
  * @see OrderedSpace
- * @author Pau Hebrero Casasayas - May 25, 2020
+ * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 25, 2020
  */
 interface BoundedSpace<T: Comparable<T>>: OrderedSpace<T> {
 
