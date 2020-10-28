@@ -1,8 +1,5 @@
-package com.github.phc1990.kmamo.algorithm
+package com.github.phc1990.kmamo.optimization
 
-import com.github.phc1990.kmamo.optimization.Objective
-import com.github.phc1990.kmamo.optimization.OptimizationCriterion
-import com.github.phc1990.kmamo.optimization.Variable
 import com.github.phc1990.kmamo.space.Space
 
 /**
@@ -53,6 +50,6 @@ internal class InternalCandidate(override val iterationIndex: Int, override val 
         /** Returns a new uniformly distributed generated instance. */
         fun uniform(iterationIndex: Int, candidateIndex: Int, variables: Map<Variable<*>, Any>): InternalCandidate =
                 InternalCandidate(iterationIndex, candidateIndex,
-                        variables.entries.associate { e -> Pair(e.key, (e.value as Space<Any>).uniform())})
+                        variables.entries.associate { e -> Pair(e.key, (e.value as Space<Any>).uniform()) })
     }
 }

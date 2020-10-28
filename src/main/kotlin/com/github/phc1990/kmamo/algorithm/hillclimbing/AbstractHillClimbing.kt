@@ -1,17 +1,15 @@
 package com.github.phc1990.kmamo.algorithm.hillclimbing
 
-import com.github.phc1990.kmamo.algorithm.*
-import com.github.phc1990.kmamo.algorithm.InternalCandidate
-import com.github.phc1990.kmamo.optimization.Objective
-import com.github.phc1990.kmamo.optimization.Variable
+import com.github.phc1990.kmamo.optimization.*
+import com.github.phc1990.kmamo.optimization.InternalCandidate
+import com.github.phc1990.kmamo.optimization.InternalIteration
 import com.github.phc1990.kmamo.optimization.VariableFactory
 import com.github.phc1990.kmamo.space.LinearSpace
 import com.github.phc1990.kmamo.space.NeighborSpace
-import com.github.phc1990.kmamo.space.Space
 
 abstract class AbstractHillClimbing(private val objective: Objective, private val maxIterations: Int? = null): Algorithm {
 
-    private val variables: MutableMap<Variable<*>, Space<Any>> = mutableMapOf()
+    private val variables: MutableMap<Variable<*>, Any> = mutableMapOf()
     private val neighbourVariables: MutableMap<Variable<*>, NeighborSpace<*>> = mutableMapOf()
     private val linearVariables: MutableMap<Variable<*>, Pair<LinearSpace<*>, Double>> = mutableMapOf()
     private lateinit var best: Candidate
@@ -25,7 +23,8 @@ abstract class AbstractHillClimbing(private val objective: Objective, private va
     override fun solve(evaluator: BlackBoxEvaluator, processor: IterationProcessor) {
 
         var i = 0
-        while(true) {
+        var stop = false
+        while(!stop) {
 
             // Initialise best candidate
             if (best == null) {
@@ -33,6 +32,7 @@ abstract class AbstractHillClimbing(private val objective: Objective, private va
 
             // Spawn new neighbour iterator
             val neighborIterator = spawnNeighborIterator(best)
+            var foundBetter = false
 
             while(neighborIterator.hasNext()) {
 
@@ -41,13 +41,15 @@ abstract class AbstractHillClimbing(private val objective: Objective, private va
 
                 if (candidate.challenge(best, objective)) {
                     best = candidate
-                } else {
-                    best.s
+                    foundBetter = true
                 }
             }
 
-            // mark as stop and process here
-            break
+            // Process iteration
+            maxIterations?.let { stop = (i >= maxIterations-1) }
+            if (foundBetter) {stop = true}
+            if (processor.process(InternalIteration(i, stop, listOf(best)))) {stop = true}
+            i++
         }
     }
 

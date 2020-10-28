@@ -1,5 +1,7 @@
 package com.github.phc1990.kmamo.algorithm
 
+import com.github.phc1990.kmamo.optimization.Candidate
+
 /**
  * Sequential neighbor iterator.
  *

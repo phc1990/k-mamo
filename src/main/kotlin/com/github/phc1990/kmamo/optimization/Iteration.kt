@@ -1,4 +1,4 @@
-package com.github.phc1990.kmamo.algorithm
+package com.github.phc1990.kmamo.optimization
 
 /**
  * An algorithm iteration. It contains information on:
@@ -16,14 +16,14 @@ interface Iteration {
     /** The index of the instance. */
     val index: Int
 
+    /** Flag indicating whether a internal stop criterion was met. */
+    val stop: Boolean
+
     /** List of evaluated candidates that constitute this iteration. */
     val candidates: List<Candidate>
 
     /** Side of the evaluated candidates. */
     fun size(): Int = candidates.size
-
-    /** Returns whether the stop criterion has been met. */
-    fun isStop(): Boolean
 }
 
 /**
@@ -32,18 +32,6 @@ interface Iteration {
  * @see Iteration
  * @author Pau Hebrero Casasayas - Jun 1, 2020
  */
-internal class InternalIteration(override val index: Int, override val candidates: List<Candidate>,
-                                 private var stop: Boolean): Iteration {
-
-    override fun isStop(): Boolean = stop
-
-    override fun forceStop(): Boolean {
-
-        if (stop) {
-            return false
-        }
-
-        stop = true
-        return true
-    }
+internal class InternalIteration(override val index: Int, override val stop: Boolean,
+                                 override val candidates: List<Candidate>): Iteration {
 }

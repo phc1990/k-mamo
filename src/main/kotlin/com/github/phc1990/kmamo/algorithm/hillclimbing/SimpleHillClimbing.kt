@@ -1,7 +1,6 @@
 package com.github.phc1990.kmamo.algorithm.hillclimbing
 
-import com.github.phc1990.kmamo.algorithm.Algorithm
-import com.github.phc1990.kmamo.algorithm.Candidate
+import com.github.phc1990.kmamo.optimization.Candidate
 import com.github.phc1990.kmamo.optimization.Objective
 
 class SimpleHillClimbing(val objective: Objective): AbstractHillClimbing(objective) {

@@ -1,7 +1,4 @@
-package com.github.phc1990.kmamo.algorithm
-
-import com.github.phc1990.kmamo.optimization.Objective
-import com.github.phc1990.kmamo.optimization.Variable
+package com.github.phc1990.kmamo.optimization
 
 /**
  * An algorithm.
@@ -18,14 +15,14 @@ interface Algorithm {
 
     /** Solves the problem using the given black-box [evaluator] function and the iteration [processor] function. */
     fun solve(evaluator: (candidate: Candidate) -> Unit,
-              processor: (iteration: Iteration) -> Unit) {
+              processor: (iteration: Iteration) -> Boolean) {
 
         val anonymousEvaluator = object : BlackBoxEvaluator {
             override fun evaluate(candidate: Candidate) = evaluator.invoke(candidate)
         }
 
         val anonymousProcessor = object : IterationProcessor {
-            override fun process(iteration: Iteration) = processor.invoke(iteration)
+            override fun process(iteration: Iteration): Boolean = processor.invoke(iteration)
         }
 
         solve(anonymousEvaluator, anonymousProcessor)
@@ -39,7 +36,6 @@ interface Algorithm {
  * 2. Evaluate the objective functions (´black-box´ evaluation)
  * 3. Set the objectives values to the candidate solution
  *
- * @see UnevaluatedCandidate
  * @author Pau Hebrero Casasayas - Jun 1, 2020
  */
 interface BlackBoxEvaluator {

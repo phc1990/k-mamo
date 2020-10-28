@@ -3,7 +3,6 @@ package com.github.phc1990.kmamo.algorithm
 import com.github.phc1990.kmamo.optimization.*
 import com.github.phc1990.kmamo.optimization.ObjectiveFactory
 import com.github.phc1990.kmamo.optimization.VariableFactory
-import com.github.phc1990.kmamo.space.FiniteSpace
 import com.github.phc1990.kmamo.space.Space
 
 /**
@@ -43,9 +42,8 @@ class PureRandomSearch(private val maxIterations: Int ? = null): Algorithm {
             }
 
             // Process iteration
-            maxIterations?.let { stop = (i >= maxIterations - 1) }
-            val iteration = InternalIteration(i, listOf(best), stop)
-            if (processor.process(iteration)) {stop = true}
+            maxIterations?.let { stop = (i >= maxIterations-1) }
+            if (processor.process(InternalIteration(i, stop, listOf(best)))) {stop = true}
             i++
         }
     }
