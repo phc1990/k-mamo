@@ -2,7 +2,7 @@ package com.github.phc1990.kmamo
 
 import com.github.phc1990.kmamo.algorithm.purerandomsearch.PureRandomSearch
 import com.github.phc1990.kmamo.optimization.OptimizationCriterion
-import com.github.phc1990.kmamo.topology.SpaceFactory
+import com.github.phc1990.kmamo.topology.implementation.SpaceFactory
 
 
 class HelloWorld {

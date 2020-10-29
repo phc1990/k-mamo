@@ -38,7 +38,7 @@ interface Candidate {
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 internal class InternalCandidate(override val iterationIndex: Int, override val candidateIndex: Int,
-                                 private val variables: Map<Variable<*>, Any>): Candidate {
+                                 internal val variables: Map<Variable<*>, Any>): Candidate {
 
     internal val objectives: MutableMap<Objective, Double> = mutableMapOf()
     override fun <T> getVariable(variable: Variable<T>): T = variables[variable] as T
@@ -48,8 +48,8 @@ internal class InternalCandidate(override val iterationIndex: Int, override val 
     companion object {
 
         /** Returns a new uniformly distributed generated instance. */
-        fun uniform(iterationIndex: Int, candidateIndex: Int, variables: Map<Variable<*>, Any>): InternalCandidate =
+        fun uniform(iterationIndex: Int, candidateIndex: Int, variables: List<Variable<*>>): InternalCandidate =
                 InternalCandidate(iterationIndex, candidateIndex,
-                        variables.entries.associate { e -> Pair(e.key, (e.value as Space<Any>).uniform()) })
+                        variables.associateWith { v -> (v.space as Space<Any>).uniform() })
     }
 }

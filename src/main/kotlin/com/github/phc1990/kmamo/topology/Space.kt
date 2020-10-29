@@ -19,5 +19,5 @@ interface Space<T> {
     fun uniform(): T
 
     /** Returns the neighbors of [t]. */
-    fun neighbors(t: T): List<T>
+    fun neighbors(t: T): Array<T>
 }

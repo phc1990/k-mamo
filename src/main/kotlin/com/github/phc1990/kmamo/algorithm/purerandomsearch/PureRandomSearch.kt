@@ -13,12 +13,12 @@ import com.github.phc1990.kmamo.topology.Space
 class PureRandomSearch(private val maxIterations: Int ? = null): Algorithm {
 
     override val name: String = "Pure Random Search"
-    private val variables: MutableMap<Variable<*>, Any> = mutableMapOf()
+    private val variables: MutableList<Variable<*>> = mutableListOf()
     private val objectives: MutableList<Objective> = mutableListOf()
     private lateinit var best: InternalCandidate
 
     fun <T, S: Space<T>> addVariable(name: String, space: S): Variable<T> =
-        VariableFactory.get(name, space).also { variables[it] = space }
+        VariableFactory.get(name, space).also { variables.add(it) }
 
     fun addObjective(name: String, criterion: OptimizationCriterion): Objective =
         ObjectiveFactory.get(name, criterion).also { objectives.add(it) }
