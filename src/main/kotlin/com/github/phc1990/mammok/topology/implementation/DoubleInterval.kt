@@ -17,32 +17,48 @@ import kotlin.math.absoluteValue
  * @see BoundedSpace
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 25, 2020
  */
-class DoubleInterval(override val lowerBoundary: Double, override val upperBoundary: Double,
-                     private val neighborhoodRadius: Double? = null):
+class DoubleInterval(private val lowerBoundary: Double, private val upperBoundary: Double,
+                     private val neighborhoodRadius: Double = 0.0, private val loop: Boolean = false):
         LinearSpace<Double>, MetricSpace<Double>, BoundedSpace<Double> {
 
+    private val span: Double
+
     init {
-        if (lowerBoundary > upperBoundary) throw IllegalArgumentException("Interval boundaries are not consistent.")
-        neighborhoodRadius?.let { if (it <= 0) throw IllegalArgumentException("Neighborhood radius has to be greater than 0.") }
+        if (lowerBoundary > upperBoundary)
+            throw IllegalArgumentException("Interval boundaries are not consistent.")
+        if (neighborhoodRadius < 0)
+            throw IllegalArgumentException("Neighborhood radius has to be greater or equal than 0.")
+        span = upperBoundary - lowerBoundary
+        if (span == 0.0) {
+            throw java.lang.IllegalArgumentException("Set is null.")
+        }
     }
 
     override fun scale(scalar: Double, t: Double): Double = scalar * t
-
     override fun add(t1: Double, t2: Double): Double = t1 + t2
-
     override fun uniform(): Double = lowerBoundary + Random.uniformDouble() * (upperBoundary - lowerBoundary)
-
     override fun metric(t1: Double, t2: Double): Double = (t1 - t2).absoluteValue
 
-    override fun neighbors(t: Double): Array<Double> {
-        var neighbors = arrayOf<Double>()
+    override fun clip(t: Double): Double {
+        if (!loop)
+            return if (t < lowerBoundary) lowerBoundary else if (t > upperBoundary) upperBoundary else t
 
-        neighborhoodRadius?.let {
+        // Looped space
+        if (t in lowerBoundary..upperBoundary)
+            return t
+        if (t < lowerBoundary)
+            return upperBoundary + ((t - lowerBoundary) % span)
+        // Above upper boundary
+        return lowerBoundary + ((t - upperBoundary) % span)
+    }
+
+    override fun neighbors(t: Double): Array<Double> {
+        if (neighborhoodRadius > 0) {
+            var neighbors = arrayOf<Double>()
             clip(t - neighborhoodRadius).also { if (it != t) neighbors += it }
             clip(t + neighborhoodRadius).also { if (it != t) neighbors += it }
             return neighbors
         }
-
-        return neighbors
+        return emptyArray()
     }
 }

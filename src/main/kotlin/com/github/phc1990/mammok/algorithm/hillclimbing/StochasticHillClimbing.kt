@@ -4,7 +4,7 @@ import com.github.phc1990.mammok.optimization.*
 import com.github.phc1990.mammok.optimization.InternalCandidate
 import com.github.phc1990.mammok.optimization.InternalIteration
 import com.github.phc1990.mammok.optimization.VariableFactory
-import com.github.phc1990.mammok.topology.Neighborhood
+import com.github.phc1990.mammok.topology.implementation.RandomlySortedNeighborhood
 import com.github.phc1990.mammok.topology.Space
 
 class StochasticHillClimbing(private val objective: Objective,
@@ -12,11 +12,11 @@ class StochasticHillClimbing(private val objective: Objective,
                              private val maxIterations: Int? = null): Algorithm {
 
     override val name: String = "Stochastic Hill Climbing"
-    private val variables: MutableList<Variable<*>> = mutableListOf()
-    private lateinit var best: InternalCandidate
+    private var variables: Array<Variable<*>> = arrayOf()
+    private lateinit var best: Candidate
 
-    fun <T, S: Space<T>> addVariable(name: String, space: Space<T>): Variable<T> =
-            VariableFactory.get(name, space).also { variables.add(it) }
+    fun <T> addVariable(name: String, space: Space<T>): Variable<T> =
+            VariableFactory.get(name, space).also { variables += it }
 
     override fun solve(evaluator: BlackBoxEvaluator, processor: IterationProcessor) {
 
@@ -29,7 +29,7 @@ class StochasticHillClimbing(private val objective: Objective,
                 best =  InternalCandidate.uniform(0, 0, variables) }
 
             // Create neighborhood
-            val neighborIterator = Neighborhood(best)
+            val neighborIterator = RandomlySortedNeighborhood(best.iterationIndex, best.variables)
             var foundBetter = false
 
             while(neighborIterator.hasNext()) {

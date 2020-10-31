@@ -15,8 +15,11 @@ interface Candidate {
     /** The index of this instance amongst the other instances within the same iteration. */
     val candidateIndex: Int
 
+    /** Map containing the variable and its value. */
+    val variables: Map<Variable<*>, Any>
+
     /** Returns the value assigned to the variable. */
-    fun <T> getVariable(variable: Variable<T>): T
+    fun <T> getVariable(variable: Variable<T>): T = variables[variable] as T
 
     /** Sets the value of the given objective. */
     fun setObjective(objective: Objective, value: Double)
@@ -48,18 +51,17 @@ interface Candidate {
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 internal class InternalCandidate(override val iterationIndex: Int, override val candidateIndex: Int,
-                                 internal val variables: Map<Variable<*>, Any>): Candidate {
+                                 override val variables: Map<Variable<*>, Any>): Candidate {
 
     internal val objectives: MutableMap<Objective, Double> = mutableMapOf()
-    override fun <T> getVariable(variable: Variable<T>): T = variables[variable] as T
     override fun setObjective(objective: Objective, value: Double) { objectives[objective] = value }
     override fun getObjective(objective: Objective): Double = objectives[objective]!!
 
     companion object {
 
         /** Returns a new uniformly distributed generated instance. */
-        fun uniform(iterationIndex: Int, candidateIndex: Int, variables: List<Variable<*>>): InternalCandidate =
+        fun uniform(iterationIndex: Int, candidateIndex: Int, variables: Array<Variable<*>>): InternalCandidate =
                 InternalCandidate(iterationIndex, candidateIndex,
-                        variables.associateWith { v -> (v.space as Space<Any>).uniform() })
+                        variables.toList().associateWith { v -> (v.space as Space<Any>).uniform() })
     }
 }

@@ -12,12 +12,6 @@ package com.github.phc1990.mammok.topology
  */
 interface BoundedSpace<T: Comparable<T>>: OrderedSpace<T> {
 
-    /** Lower boundary. */
-    val lowerBoundary: T
-
-    /** Upper boundary. */
-    val upperBoundary: T
-
-    /** Returns the clipped value of [t] between [lowerBoundary] and [upperBoundary] (both inclusive). */
-    fun clip(t: T) = if (t < lowerBoundary) lowerBoundary else if (t > upperBoundary) upperBoundary else t
+    /** Returns the clipped value of [t]. */
+    fun clip(t: T): T
 }
