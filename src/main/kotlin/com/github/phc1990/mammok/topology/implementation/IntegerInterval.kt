@@ -35,7 +35,7 @@ class IntegerInterval(private val lowerBoundary: Int, private val upperBoundary:
             throw IllegalArgumentException("Neighborhood radius has to be greater or equal than 0.")
         span = upperBoundary - lowerBoundary
         if (span == 0) {
-            throw java.lang.IllegalArgumentException("Set is null.")
+            throw IllegalArgumentException("Set is null.")
         }
         size = span + 1
     }

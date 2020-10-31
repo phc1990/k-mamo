@@ -30,7 +30,7 @@ class DoubleInterval(private val lowerBoundary: Double, private val upperBoundar
             throw IllegalArgumentException("Neighborhood radius has to be greater or equal than 0.")
         span = upperBoundary - lowerBoundary
         if (span == 0.0) {
-            throw java.lang.IllegalArgumentException("Set is null.")
+            throw IllegalArgumentException("Set is null.")
         }
     }
 
