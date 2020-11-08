@@ -1,5 +1,5 @@
 package org.phc1990.mammok.algorithm.hillclimbing
-
+/*
 import org.phc1990.mammok.optimization.*
 import org.phc1990.mammok.optimization.InternalCandidate
 import org.phc1990.mammok.optimization.InternalIteration
@@ -57,3 +57,5 @@ class StochasticHillClimbing(private val objective: Objective,
         }
     }
 }
+
+*/

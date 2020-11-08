@@ -23,6 +23,22 @@ interface Candidate {
 
     /** Returns the objective value. */
     fun getObjective(index: Int): Double
+
+    /** Returns true if the instance objective value is better than the other objective value. */
+    fun challenge(other: Candidate, index: Int, criterion: OptimizationCriterion): Boolean =
+        if (criterion == OptimizationCriterion.MAXIMIZE)
+            getObjective(index) > other.getObjective(index)
+        else getObjective(index) < other.getObjective(index)
+
+    /**
+     * Returns the improvement of the instance' objective value w.r.t. the other' objective value (the returned number
+     * will be positive if the instance' objective is better than the other' objective, regardless of the optimisation
+     * criterion).
+     */
+    fun improvement(other: Candidate, index: Int, criterion: OptimizationCriterion): Double =
+        if (criterion == OptimizationCriterion.MAXIMIZE)
+            getObjective(index) - other.getObjective(index)
+        else -getObjective(index) + other.getObjective(index)
 }
 
 /**
@@ -32,39 +48,22 @@ interface Candidate {
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 internal class InternalCandidate(override val iterationIndex: Int, override val candidateIndex: Int,
-                                 internal val variables: Array<*>, numberOfObjectives: Int,
-                                 internal val objectives: DoubleArray = DoubleArray(numberOfObjectives)): Candidate {
+                                 private val variables: Array<*>, numberOfObjectives: Int): Candidate {
 
-    companion object {
-
-        /** Returns a new uniformly distributed generated instance. */
-        fun uniform(iterationIndex: Int, candidateIndex: Int, variableSpaces: Array<Space<*>>,
-                    numberOfObjectives: Int): InternalCandidate {
-
-            return InternalCandidate(   iterationIndex,
-                                        candidateIndex,
-                                        Array(variableSpaces.size){ index -> variableSpaces[index].uniform()},
-                                        numberOfObjectives)
-        }
-    }
-
+    internal val objectives: DoubleArray = DoubleArray(numberOfObjectives)
     override fun <T> getVariable(index: Int, type: Class<T>): T = variables[index] as T
     override fun setObjective(index: Int, value: Double) { objectives[index] = value }
     override fun getObjective(index: Int): Double = objectives[index]
 
-    /** Returns true if the instance objective value is better than the other objective value. */
-    fun challenge(other: Candidate, index: Int, criterion: OptimizationCriterion): Boolean =
-            if (criterion == OptimizationCriterion.MAXIMIZE)
-                getObjective(index) > other.getObjective(index)
-            else getObjective(index) < other.getObjective(index)
+    companion object {
 
-    /**
-     * Returns the improvement of the instance' objective value w.r.t. the other' objective value (the returned number
-     * will be positive if the instance' objective is better than the other' objective, regardless of the optimisation
-     * criterion).
-     */
-    fun improvement(other: Candidate, index: Int, criterion: OptimizationCriterion): Double =
-            if (criterion == OptimizationCriterion.MAXIMIZE)
-                getObjective(index) - other.getObjective(index)
-            else -getObjective(index) + other.getObjective(index)
+        /** Returns a new uniformly distributed generated instance. */
+        fun uniform(iterationIndex: Int, candidateIndex: Int, variableSpaces: Array<Space<Any>>,
+                    numberOfObjectives: Int): InternalCandidate {
+
+            return InternalCandidate(iterationIndex, candidateIndex,
+                    Array(variableSpaces.size){ index -> variableSpaces[index].uniform()},
+                    numberOfObjectives)
+        }
+    }
 }

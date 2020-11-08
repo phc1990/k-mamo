@@ -2,10 +2,8 @@ package org.phc1990.mammok.topology.neighborhood
 
 import org.phc1990.mammok.optimization.Candidate
 import org.phc1990.mammok.optimization.InternalCandidate
-import org.phc1990.mammok.optimization.Variable
 import org.phc1990.mammok.utils.random.Random
 import org.phc1990.mammok.topology.space.Space
-import java.lang.RuntimeException
 
 /**
  * A [Neighborhood] that provides randomly sorted neighbors.
@@ -15,9 +13,10 @@ import java.lang.RuntimeException
  */
 internal class RandomlySortedNeighborhood: Neighborhood {
 
-    private var iterationIndex: Int
+    private val point: Candidate
+    private val iterationIndex: Int
     private var nextCandidateIndex: Int = 0
-    private var variables = arrayOf<Variable<*>>()
+    private val numberOfObjectives: Int
 
     /** A matrix containing each of the neighbor values for each variable. This contains all the potential values for
      * each variable, that, in combination, can spawn any neighbor. (e.g. {{-1,0,+1}, {"a","b"}}). For each variable,
@@ -30,27 +29,32 @@ internal class RandomlySortedNeighborhood: Neighborhood {
     /** An iterator that provides the next neighbor ordinal. */
     private val ordinalIterator: Iterator<Int>
 
-    constructor(iterationIndex: Int, variables: Map<Variable<*>, Any>) {
+    constructor(candidate: Candidate, variables: Array<Space<Any>>, numberOfObjectives: Int) {
 
-        this.iterationIndex = iterationIndex
+        point = candidate
+        this.numberOfObjectives = numberOfObjectives
 
-        variables.entries.forEach { e ->
+        // Set the iteration index for the neighbors
+        iterationIndex = candidate.iterationIndex + 1
+
+        for (i in variables.indices) {
+            // Neighbors array
             var array = arrayOf<Any>()
 
+            // Get the point
+            val point = candidate.getVariable(i, Any::class.java)
+
             // Add the point itself (index 0 of the array)
-            array += e.value
+            array += point
 
             // Add the neighbors to the point (index 1,2,...)
-            (e.key.space as Space<Any>).neighbors(e.value)?.forEach { n -> array += n }
+            variables[i].neighbors(point)?.forEach { n -> array += n }
 
             sizes += array.size
             values += array
-            this.variables += e.key
         }
 
-        if (values.size != variables.size || sizes.size != variables.size)
-            throw RuntimeException("Neighborhood dimensions does not match variable space dimension")
-
+        // Compute the number of total neighbors
         var totalNeighbors = 1
         for (size in sizes) {
             totalNeighbors *= size
@@ -68,17 +72,10 @@ internal class RandomlySortedNeighborhood: Neighborhood {
      * one of the variables. For instance, {2,0} will select the third ([2]) value for the first variable and the first
      * value ([0]) for the second variable.
      */
-    private fun candidate(indexes: Array<Int>): Candidate {
-
-        val map = mutableMapOf<Variable<*>, Any>()
-
-        for (i in variables.indices) {
-            map[variables[i]] = values[i][indexes[i]]
-        }
-
-        val candidate = InternalCandidate(iterationIndex, nextCandidateIndex, map)
+    private fun candidate(indexes: IntArray): Candidate {
+        val candidate = InternalCandidate(iterationIndex, nextCandidateIndex,
+                Array(indexes.size) { i -> values[i][indexes[i]]}, numberOfObjectives)
         nextCandidateIndex++
-
         return candidate
     }
 
@@ -95,20 +92,24 @@ internal class RandomlySortedNeighborhood: Neighborhood {
      * - the ordinal '1' would correspond to indexes {0,0,1}
      * - the ordinal '2' would correspond to indexes {0,1,0}
      * - the ordinal '3' would correspond to indexes {0,1,1}
-     * - the ordinal '4' would correspond to indexes {0,2,1}
-     * - the ordinal '5' would correspond to indexes {0,3,0}
+     * - the ordinal '4' would correspond to indexes {0,2,0}
+     * - the ordinal '5' would correspond to indexes {0,2,1}
+     * - the ordinal '6' would correspond to indexes {1,0,0}
      * - ...
-     * - the ordinal '11' would correspond to indexes {2,3,2}
+     * - the ordinal '11' would correspond to indexes {1,2,1}
      */
-    private fun indexes(ordinal: Int): Array<Int> {
-        val indexes = arrayOf(sizes.size)
-
-        var factor = 1
-        for (i in sizes.size-1 downTo 0 step 1) {
-            factor *= sizes[i]
-            indexes[i] = ordinal.rem(factor)
+    private fun indexes(ordinal: Int): IntArray {
+        val indexes = IntArray(sizes.size)
+        var divident = ordinal
+        var divisor = 1
+        for (i in sizes.indices) {
+            divisor *= sizes[i]
         }
-
+        for (i in sizes.indices) {
+            divisor /= sizes[i]
+            indexes[i] = divident/divisor
+            divident = ordinal.rem(divisor)
+        }
         return indexes
     }
 }

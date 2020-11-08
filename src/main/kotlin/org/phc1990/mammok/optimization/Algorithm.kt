@@ -9,7 +9,7 @@ import org.phc1990.mammok.topology.space.Space
  * @param S the variable space type allowed (e.g. [LinearSpace])
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
-interface Algorithm<S: Space<*>> {
+interface Algorithm<S: Space<Any>> {
 
     /** Name of the algorithm. */
     val name: String

@@ -18,10 +18,8 @@ abstract class OptimizationTestProblem {
     private var startTime: Long = 0
     private lateinit var algorithmName: String
 
-    constructor()
-
     @Synchronized
-    fun <S: Space<*>> solve(algorithm: Algorithm<S>) {
+    fun <S: Space<Any>> solve(algorithm: Algorithm<S>) {
         variables.forEach { algorithm.addVariable(it as S) }
         objectives.forEach { algorithm.addObjective(it) }
         algorithmName = algorithm.name
@@ -32,14 +30,13 @@ abstract class OptimizationTestProblem {
     /** Processes the iteration. */
     private fun process(iteration: Iteration): Boolean {
         if (iteration.stop) {
-            val processingTime = 1E-3 * (System.currentTimeMillis() - startTime)
-            println("Algorithm: $algorithmName, Problem: $name, Comp. Time: $processingTime [s]")
+            printSummary(1E-3 * (System.currentTimeMillis() - startTime), iteration)
             validate(iteration)
         }
         return false
     }
 
-    /* Evaluates the candidate. */
+    /** Evaluates the candidate. */
     protected abstract fun evaluate(candidate: Candidate): Unit
 
     /** Validates the final result. */
@@ -48,4 +45,11 @@ abstract class OptimizationTestProblem {
     /** Returns true if the variable is within the margin distance of the expected value. */
     protected fun <T> validateVariable( space: MetricSpace<T>, actual: T, expected: T,
                                         margin: Double): Boolean = abs(space.metric(actual, expected)) <= margin
+
+    private fun printSummary(processingTime: Double, iteration: Iteration) {
+        println("Algorithm: $algorithmName, Problem: $name, Comp. Time: $processingTime [s]")
+        for (i in variables.indices) {
+            println("Variable $i: ${iteration.candidates[0].getVariable(i, Any::class.java)}")
+        }
+    }
 }

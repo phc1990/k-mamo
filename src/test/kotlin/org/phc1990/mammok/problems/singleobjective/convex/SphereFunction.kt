@@ -35,7 +35,6 @@ class SphereFunction(private val dimensions: Int, private val realDimensions: In
                 candidate.getVariable(i, Int::class.java).toDouble().pow(2.0)
             }
         }
-
         candidate.setObjective(0, f)
     }
 
