@@ -15,33 +15,14 @@ interface Candidate {
     /** The index of this instance amongst the other instances within the same iteration. */
     val candidateIndex: Int
 
-    /** Map containing the variable and its value. */
-    val variables: Map<Variable<*>, Any>
+    /** Returns the variable value. */
+    fun <T> getVariable(index: Int, type: Class<T>): T
 
-    /** Returns the value assigned to the variable. */
-    fun <T> getVariable(variable: Variable<T>): T = variables[variable] as T
+    /** Sets the objective value. */
+    fun setObjective(index: Int, value: Double)
 
-    /** Sets the value of the given objective. */
-    fun setObjective(objective: Objective, value: Double)
-
-    /** Returns the value of the given objective. */
-    fun getObjective(objective: Objective): Double
-
-    /** Returns true if the instance' objective value is better than the other' objective value. */
-    fun challenge(other: Candidate, objective: Objective): Boolean =
-            if (objective.criterion == OptimizationCriterion.MAXIMIZE)
-                getObjective(objective) > other.getObjective(objective)
-            else getObjective(objective) < other.getObjective(objective)
-
-    /**
-     * Returns the improvement of the instance' objective value w.r.t. the other' objective value (the returned number
-     * will be positive if the instance' objective is better than the other' objective, regardless of the optimisation
-     * criterion).
-     */
-    fun improvement(other: Candidate, objective: Objective): Double =
-            if (objective.criterion == OptimizationCriterion.MAXIMIZE)
-                getObjective(objective) - other.getObjective(objective)
-            else -getObjective(objective) + other.getObjective(objective)
+    /** Returns the objective value. */
+    fun getObjective(index: Int): Double
 }
 
 /**
@@ -51,17 +32,39 @@ interface Candidate {
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 internal class InternalCandidate(override val iterationIndex: Int, override val candidateIndex: Int,
-                                 override val variables: Map<Variable<*>, Any>): Candidate {
-
-    internal val objectives: MutableMap<Objective, Double> = mutableMapOf()
-    override fun setObjective(objective: Objective, value: Double) { objectives[objective] = value }
-    override fun getObjective(objective: Objective): Double = objectives[objective]!!
+                                 internal val variables: Array<*>, numberOfObjectives: Int,
+                                 internal val objectives: DoubleArray = DoubleArray(numberOfObjectives)): Candidate {
 
     companion object {
 
         /** Returns a new uniformly distributed generated instance. */
-        fun uniform(iterationIndex: Int, candidateIndex: Int, variables: Array<Variable<*>>): InternalCandidate =
-                InternalCandidate(iterationIndex, candidateIndex,
-                        variables.toList().associateWith { v -> (v.space as Space<Any>).uniform() })
+        fun uniform(iterationIndex: Int, candidateIndex: Int, variableSpaces: Array<Space<*>>,
+                    numberOfObjectives: Int): InternalCandidate {
+
+            return InternalCandidate(   iterationIndex,
+                                        candidateIndex,
+                                        Array(variableSpaces.size){ index -> variableSpaces[index].uniform()},
+                                        numberOfObjectives)
+        }
     }
+
+    override fun <T> getVariable(index: Int, type: Class<T>): T = variables[index] as T
+    override fun setObjective(index: Int, value: Double) { objectives[index] = value }
+    override fun getObjective(index: Int): Double = objectives[index]
+
+    /** Returns true if the instance objective value is better than the other objective value. */
+    fun challenge(other: Candidate, index: Int, criterion: OptimizationCriterion): Boolean =
+            if (criterion == OptimizationCriterion.MAXIMIZE)
+                getObjective(index) > other.getObjective(index)
+            else getObjective(index) < other.getObjective(index)
+
+    /**
+     * Returns the improvement of the instance' objective value w.r.t. the other' objective value (the returned number
+     * will be positive if the instance' objective is better than the other' objective, regardless of the optimisation
+     * criterion).
+     */
+    fun improvement(other: Candidate, index: Int, criterion: OptimizationCriterion): Double =
+            if (criterion == OptimizationCriterion.MAXIMIZE)
+                getObjective(index) - other.getObjective(index)
+            else -getObjective(index) + other.getObjective(index)
 }

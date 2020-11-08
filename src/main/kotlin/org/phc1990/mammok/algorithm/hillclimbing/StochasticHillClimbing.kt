@@ -5,11 +5,12 @@ import org.phc1990.mammok.optimization.InternalCandidate
 import org.phc1990.mammok.optimization.InternalIteration
 import org.phc1990.mammok.optimization.VariableFactory
 import org.phc1990.mammok.topology.neighborhood.RandomlySortedNeighborhood
+import org.phc1990.mammok.topology.space.LinearSpace
 import org.phc1990.mammok.topology.space.Space
 
 class StochasticHillClimbing(private val objective: Objective,
                              private val selectionFunction: (improvement: Double) -> Boolean,
-                             private val maxIterations: Int? = null): Algorithm {
+                             private val maxIterations: Int? = null): Algorithm<LinearSpace<*>> {
 
     override val name: String = "Stochastic Hill Climbing"
     private var variables: Array<Variable<*>> = arrayOf()

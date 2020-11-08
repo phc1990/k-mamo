@@ -5,16 +5,17 @@ import org.phc1990.mammok.optimization.InternalCandidate
 import org.phc1990.mammok.optimization.InternalIteration
 import org.phc1990.mammok.optimization.VariableFactory
 import org.phc1990.mammok.topology.neighborhood.RandomlySortedNeighborhood
+import org.phc1990.mammok.topology.space.LinearSpace
 import org.phc1990.mammok.topology.space.Space
 
 class SteepestAscentHillClimbing(private val objective: Objective, private val maxIterations: Int? = null): Algorithm {
 
     override val name: String = "Steepest Ascent Hill Climbing"
-    private var variables: Array<Variable<*>> = arrayOf()
+    private var variables: Array<Variable<*, LinearSpace<*>>> = arrayOf()
     private lateinit var best: Candidate
 
-    fun <T> addVariable(name: String, space: Space<T>): Variable<T> =
-            VariableFactory.get(name, space).also { variables += it }
+    fun <T, S: Space<T>> addVariable(variable: Variable<T,S>) {
+        variables += (variable as Variable<*, LinearSpace<*>>)}
 
     override fun solve(evaluator: BlackBoxEvaluator, processor: IterationProcessor) {
 

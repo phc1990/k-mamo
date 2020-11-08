@@ -15,6 +15,15 @@ interface Variable<T, S: Space<T>> {
 
     /** Variable's space. */
     val space: Space<T>
+
+    val clazz: Class<T>
+}
+
+interface VariableManager {
+
+    fun <T> addVariable(name: String, s: Space)
+
+
 }
 
 /**
@@ -28,9 +37,9 @@ internal abstract class VariableFactory {
     companion object {
 
         /** Returns a new instance of [Variable]. */
-        fun <T, S: Space<T>> get(name: String, space: S): Variable<T> = DefaultVariable(name, space)
+        fun <T, S: Space<T>> get(name: String, space: S): Variable<T,S> = DefaultVariable(name, space)
 
         /** Default implementation of [Variable], used by the [VariableFactory]. */
-        private class DefaultVariable<T>(override val name: String, override val space: Space<T>): Variable<T>
+        private class DefaultVariable<T, S: Space<T>>(override val name: String, override val space: Space<T>): Variable<T,S>
     }
 }

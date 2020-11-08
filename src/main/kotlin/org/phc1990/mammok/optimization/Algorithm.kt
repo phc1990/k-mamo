@@ -1,33 +1,41 @@
 package org.phc1990.mammok.optimization
 
+import org.phc1990.mammok.topology.space.LinearSpace
+import org.phc1990.mammok.topology.space.Space
+
 /**
  * An algorithm.
  *
+ * @param S the variable space type allowed (e.g. [LinearSpace])
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
-interface Algorithm {
+interface Algorithm<S: Space<*>> {
 
     /** Name of the algorithm. */
     val name: String
 
-    /** Solves the problem using the given black-box [evaluator] and iteration [processor]. */
-    fun solve(evaluator: BlackBoxEvaluator, processor: IterationProcessor)
+    /** Adds a new optimization variable, returning its reference index. */
+    fun addVariable(space: S): Int
 
-    /** Solves the problem using the given black-box [evaluate] function and the iteration [process] function. */
-    fun solve(evaluate: (candidate: Candidate) -> Unit,
-              initialise: () -> Unit,
-              process: (iteration: Iteration) -> Boolean) {
+    /** Adds a new optimization objective, returning its reference index. */
+    fun addObjective(criterion: OptimizationCriterion): Int
+
+    /** Runs the algorithm using the given black-box [evaluator] and iteration [processor]. */
+    fun run(evaluator: BlackBoxEvaluator, processor: IterationProcessor)
+
+    /** Runs the algorithm using the given black-box [evaluate] function and the iteration [process] function. */
+    fun run(evaluate: (candidate: Candidate) -> Unit,
+            process: (iteration: Iteration) -> Boolean) {
 
         val anonymousEvaluator = object : BlackBoxEvaluator {
             override fun evaluate(candidate: Candidate) = evaluate.invoke(candidate)
         }
 
         val anonymousProcessor = object : IterationProcessor {
-            override fun initialize() = initialise.invoke()
             override fun process(iteration: Iteration): Boolean = process.invoke(iteration)
         }
 
-        solve(anonymousEvaluator, anonymousProcessor)
+        run(anonymousEvaluator, anonymousProcessor)
     }
 }
 
@@ -41,6 +49,8 @@ interface Algorithm {
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 interface BlackBoxEvaluator {
+
+    /** Evaluates the given [candidate]. */
     fun evaluate(candidate: Candidate)
 }
 
@@ -54,10 +64,6 @@ interface BlackBoxEvaluator {
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 interface IterationProcessor {
-
-    /** This function will be called right before starting to solve the problem (it can be used for instance, to
-     * record the current time). */
-    fun initialize()
 
     /** Processes the given [iteration], returning true if the process is to be stopped. */
     fun process(iteration: Iteration): Boolean

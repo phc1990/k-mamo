@@ -1,7 +1,7 @@
 package org.phc1990.mammok.algorithm.hillclimbing
 
 import org.junit.Test
-import org.phc1990.mammok.algorithm.functions.SphereFunction
+import org.phc1990.mammok.problems.singleobjective.convex.SphereFunction
 import org.phc1990.mammok.optimization.ObjectiveFactory
 import org.phc1990.mammok.optimization.OptimizationCriterion
 import org.phc1990.mammok.optimization.Variable

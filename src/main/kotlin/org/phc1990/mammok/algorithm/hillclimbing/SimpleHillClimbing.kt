@@ -7,18 +7,25 @@ import org.phc1990.mammok.optimization.VariableFactory
 import org.phc1990.mammok.topology.neighborhood.RandomlySortedNeighborhood
 import org.phc1990.mammok.topology.space.Space
 
-class SimpleHillClimbing(private val objective: Objective, private val maxIterations: Int? = null): Algorithm {
+class SimpleHillClimbing(private val maxIterations: Int? = null): Algorithm<Space<*>> {
 
     override val name: String = "Simple Hill Climbing"
-    private var variables: Array<Variable<*>> = arrayOf()
+    private var variables: Array<Space<*>> = arrayOf()
+    private var objectives: Array<OptimizationCriterion> = arrayOf()
     private lateinit var best: Candidate
 
-    fun <T> addVariable(name: String, space: Space<T>): Variable<T> =
-            VariableFactory.get(name, space).also { variables += it}
 
-    override fun solve(evaluator: BlackBoxEvaluator, processor: IterationProcessor) {
+    override fun addVariable(space: Space<*>): Int {
+        variables += space
+        return variables.size-1
+    }
 
-        processor.initialize()
+    override fun addObjective(criterion: OptimizationCriterion): Int {
+        objectives += criterion
+        return objectives.size-1
+    }
+
+    override fun run(evaluator: BlackBoxEvaluator, processor: IterationProcessor) {
 
         var i = 0
         var stop = false
@@ -26,7 +33,7 @@ class SimpleHillClimbing(private val objective: Objective, private val maxIterat
 
             // Initialise best candidate
             if (best == null) {
-                best =  InternalCandidate.uniform(0, 0, variables) }
+                best =  InternalCandidate.uniform(0, 0, variables, objectives.size) }
 
             // Create neighborhood
             val neighborIterator = RandomlySortedNeighborhood(best.iterationIndex, best.variables)
@@ -51,4 +58,5 @@ class SimpleHillClimbing(private val objective: Objective, private val maxIterat
             i++
         }
     }
+
 }
