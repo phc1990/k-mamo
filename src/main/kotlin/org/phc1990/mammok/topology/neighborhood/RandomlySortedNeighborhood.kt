@@ -13,10 +13,8 @@ import org.phc1990.mammok.topology.space.Space
  */
 internal class RandomlySortedNeighborhood: Neighborhood {
 
-    private val point: Candidate
     private val iterationIndex: Int
     private var nextCandidateIndex: Int = 0
-    private val numberOfObjectives: Int
 
     /** A matrix containing each of the neighbor values for each variable. This contains all the potential values for
      * each variable, that, in combination, can spawn any neighbor. (e.g. {{-1,0,+1}, {"a","b"}}). For each variable,
@@ -29,10 +27,7 @@ internal class RandomlySortedNeighborhood: Neighborhood {
     /** An iterator that provides the next neighbor ordinal. */
     private val ordinalIterator: Iterator<Int>
 
-    constructor(candidate: Candidate, variables: Array<Space<Any>>, numberOfObjectives: Int) {
-
-        point = candidate
-        this.numberOfObjectives = numberOfObjectives
+    constructor(candidate: Candidate, variables: Array<Space<Any>>) {
 
         // Set the iteration index for the neighbors
         iterationIndex = candidate.iterationIndex + 1
@@ -74,7 +69,7 @@ internal class RandomlySortedNeighborhood: Neighborhood {
      */
     private fun candidate(indexes: IntArray): Candidate {
         val candidate = InternalCandidate(iterationIndex, nextCandidateIndex,
-                Array(indexes.size) { i -> values[i][indexes[i]]}, numberOfObjectives)
+                Array(indexes.size) { i -> values[i][indexes[i]]})
         nextCandidateIndex++
         return candidate
     }
@@ -102,6 +97,7 @@ internal class RandomlySortedNeighborhood: Neighborhood {
         val indexes = IntArray(sizes.size)
         var divident = ordinal
         var divisor = 1
+        // TODO store this as a vector
         for (i in sizes.indices) {
             divisor *= sizes[i]
         }

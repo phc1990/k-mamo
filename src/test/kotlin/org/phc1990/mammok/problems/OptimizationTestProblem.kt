@@ -1,5 +1,6 @@
 package org.phc1990.mammok.problems
 
+import org.phc1990.mammok.algorithm.Algorithm
 import org.phc1990.mammok.optimization.*
 import org.phc1990.mammok.topology.space.MetricSpace
 import org.phc1990.mammok.topology.space.Space
