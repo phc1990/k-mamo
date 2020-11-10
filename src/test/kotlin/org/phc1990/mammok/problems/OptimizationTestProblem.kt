@@ -15,17 +15,17 @@ abstract class OptimizationTestProblem {
 
     lateinit var name: String
     protected lateinit var variables: Array<*>
-    protected lateinit var objectives: Array<OptimizationCriterion>
     private var startTime: Long = 0
     private lateinit var algorithmName: String
 
     @Synchronized
-    fun <S: Space<Any>> solve(algorithm: Algorithm<S>) {
+    fun <S: Space<Any>> solve(algorithm: Algorithm<S>,
+                              prevalence: (c1: Candidate, c2: Candidate) -> Int,
+                              pruning: (set: Set<Candidate>) -> Unit) {
         variables.forEach { algorithm.addVariable(it as S) }
-        objectives.forEach { algorithm.addObjective(it) }
         algorithmName = algorithm.name
         startTime = System.currentTimeMillis()
-        algorithm.run(::evaluate, ::process)
+        algorithm.run(::evaluate, prevalence, pruning, ::process)
     }
 
     /** Processes the iteration. */
@@ -41,7 +41,10 @@ abstract class OptimizationTestProblem {
     protected abstract fun evaluate(candidate: Candidate): Unit
 
     /** Validates the final result. */
-    protected abstract fun validate(iteration: Iteration)
+    private fun validate(iteration: Iteration) = iteration.optimalSet.forEach { validateCandidate(it) }
+
+    /** Validates a candidate. */
+    protected abstract fun validateCandidate(candidate: Candidate)
 
     /** Returns true if the variable is within the margin distance of the expected value. */
     protected fun <T> validateVariable( space: MetricSpace<T>, actual: T, expected: T,
@@ -49,8 +52,17 @@ abstract class OptimizationTestProblem {
 
     private fun printSummary(processingTime: Double, iteration: Iteration) {
         println("Algorithm: $algorithmName, Problem: $name, Comp. Time: $processingTime [s]")
-        for (i in variables.indices) {
-            println("Variable $i: ${iteration.candidates[0].getVariable(i, Any::class.java)}")
+        println("Iteration ${iteration.index}")
+        for (optimal in iteration.optimalSet) {
+            println("Optimal, iteration: ${optimal.iterationIndex}")
+            for (i in variables.indices) {
+                println("Variable $i: ${optimal.getVariable(i, Any::class.java)}")
+            }
+            println("")
+            for (i in optimal.objectives.indices) {
+                println("Objective $i: ${optimal.objectives[i]}")
+            }
+            println("----")
         }
     }
 }

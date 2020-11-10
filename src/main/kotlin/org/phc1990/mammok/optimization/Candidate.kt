@@ -12,15 +12,11 @@ interface Candidate {
     /** The algorithm iteration to which this instance belongs. */
     val iterationIndex: Int
 
-    /** The index of this instance amongst the other instances within the same iteration. */
-    val candidateIndex: Int
-
     /** Returns the variable value. */
     fun <T> getVariable(index: Int, type: Class<T>): T
 
     /** Sets the objective value. */
     var objectives: DoubleArray
-
 }
 
 /**
@@ -30,7 +26,6 @@ interface Candidate {
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
 internal class InternalCandidate(override val iterationIndex: Int,
-                                 override val candidateIndex: Int,
                                  private val variables: Array<*>): Candidate {
 
     override var objectives: DoubleArray = DoubleArray(0)
@@ -39,9 +34,9 @@ internal class InternalCandidate(override val iterationIndex: Int,
     companion object {
 
         /** Returns a new uniformly distributed generated instance. */
-        fun uniform(iterationIndex: Int, candidateIndex: Int, variableSpaces: Array<Space<Any>>): InternalCandidate {
+        fun uniform(iterationIndex: Int, variableSpaces: Array<Space<Any>>): InternalCandidate {
 
-            return InternalCandidate(iterationIndex, candidateIndex,
+            return InternalCandidate(iterationIndex,
                     Array(variableSpaces.size){ index -> variableSpaces[index].uniform()})
         }
     }

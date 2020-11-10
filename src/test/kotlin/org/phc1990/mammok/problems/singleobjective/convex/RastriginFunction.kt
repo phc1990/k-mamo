@@ -30,7 +30,7 @@ class RastriginFunction(private val dimensions: Int, private val tolerance: Doub
     }
 
     override fun validate(iteration: Iteration) {
-        val candidate = iteration.candidates[0]
+        val candidate = iteration.optimalSet[0]
         for (i in variables.indices) {
             validateVariable(interval, candidate.getVariable(0, Double::class.java), 0.0, tolerance)
         }

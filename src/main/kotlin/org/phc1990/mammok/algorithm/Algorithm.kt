@@ -19,10 +19,11 @@ interface Algorithm<S: Space<Any>> {
     /** Adds a new optimization variable, returning its reference index. */
     fun addVariable(space: S): Int
 
-    /** Runs the algorithm using the given black-box [evaluate] function, the [prevalence] comparison function and the
-     * iteration [process] function. */
-    fun run(evaluate: (candidate: Candidate) -> Unit,
-            prevalence: (o1: Candidate, o2: Candidate) -> Int,
+    /** Runs the algorithm using the given black-box [evaluation] function, the candidate [prevalence] comparison,
+     * the optimal set [pruning] function, and the iteration [process] function. */
+    fun run(evaluation: (candidate: Candidate) -> Unit,
+            prevalence: (c1: Candidate, c2: Candidate) -> Int,
+            pruning: (set: Set<Candidate>) -> Unit,
             process: (iteration: Iteration) -> Boolean)
 }
 

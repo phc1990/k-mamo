@@ -10,5 +10,4 @@ abstract class AbstractAlgorithm<S: Space<Any>>: Algorithm<S> {
         variables += space
         return variables.size-1
     }
-
 }

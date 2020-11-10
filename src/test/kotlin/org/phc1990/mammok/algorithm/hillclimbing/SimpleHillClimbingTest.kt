@@ -10,7 +10,7 @@ class SimpleHillClimbingTest {
 
         val problem = SphereFunction(3, 2, 10.0, 0.01)
         val algorithm = SimpleHillClimbing()
-        problem.solve(algorithm)
+        problem.solve(algorithm, pre)
     }
 
 }

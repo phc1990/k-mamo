@@ -1,8 +1,6 @@
 package org.phc1990.mammok.problems.singleobjective.convex
 
 import org.phc1990.mammok.optimization.Candidate
-import org.phc1990.mammok.optimization.Iteration
-import org.phc1990.mammok.optimization.OptimizationCriterion
 import org.phc1990.mammok.problems.OptimizationTestProblem
 import org.phc1990.mammok.topology.space.implementation.DoubleInterval
 import org.phc1990.mammok.topology.space.implementation.IntegerInterval
@@ -33,7 +31,6 @@ class SphereFunction(private val dimensions: Int, private val realDimensions: In
             if (i < realDimensions) { realInterval } else { integerInterval }
         }
 
-        objectives = arrayOf(OptimizationCriterion.MINIMIZE)
         name = "Sphere Function, dimensions: $dimensions, " +
                 "real dimensions: $realDimensions, integer dim: ${dimensions-realDimensions}, " +
                 "search interval: [-$semiInterval, +$semiInterval], tolerance: $realTolerance"
@@ -51,8 +48,7 @@ class SphereFunction(private val dimensions: Int, private val realDimensions: In
         candidate.objectives[0] = f
     }
 
-    override fun validate(iteration: Iteration) {
-        val candidate = iteration.candidates[0]
+    override fun validateCandidate(candidate: Candidate) {
         for (i in 0 until dimensions) {
             if (i < realDimensions) {
                 validateVariable(realInterval, candidate.getVariable(i, Double::class.java), 0.0, realTolerance)

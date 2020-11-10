@@ -19,11 +19,8 @@ interface Iteration {
     /** Flag indicating whether a internal stop criterion was met. */
     val stop: Boolean
 
-    /** List of evaluated candidates that constitute this iteration. */
-    val candidates: List<Candidate>
-
-    /** Side of the evaluated candidates. */
-    fun size(): Int = candidates.size
+    /** Set of optimal candidates that constitute this iteration. */
+    val optimalSet: Set<Candidate>
 }
 
 /**
@@ -32,5 +29,5 @@ interface Iteration {
  * @see Iteration
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
-internal class InternalIteration(override val index: Int, override val stop: Boolean,
-                                 override val candidates: List<Candidate>): Iteration
+internal data class InternalIteration(  override val index: Int, override val stop: Boolean,
+                                        override val optimalSet: Set<Candidate>): Iteration
