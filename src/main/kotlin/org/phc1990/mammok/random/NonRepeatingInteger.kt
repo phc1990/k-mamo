@@ -1,4 +1,4 @@
-package org.phc1990.mammok.utils.random
+package org.phc1990.mammok.random
 
 internal class NonRepeatingInteger(private val min: Int, private val max: Int): Iterator<Int> {
 

@@ -1,4 +1,4 @@
-package org.phc1990.mammok.topology.space.implementation
+package org.phc1990.mammok.topology.space.search
 
 import org.phc1990.mammok.topology.space.FiniteSpace
 

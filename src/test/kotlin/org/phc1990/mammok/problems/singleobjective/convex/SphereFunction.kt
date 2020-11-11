@@ -1,9 +1,9 @@
 package org.phc1990.mammok.problems.singleobjective.convex
 
-import org.phc1990.mammok.optimization.Candidate
+import org.phc1990.mammok.api.Candidate
 import org.phc1990.mammok.problems.OptimizationTestProblem
-import org.phc1990.mammok.topology.space.implementation.DoubleInterval
-import org.phc1990.mammok.topology.space.implementation.IntegerInterval
+import org.phc1990.mammok.topology.space.search.RealInterval
+import org.phc1990.mammok.topology.space.search.IntegerInterval
 import kotlin.math.pow
 
 /**
@@ -23,7 +23,7 @@ import kotlin.math.pow
 class SphereFunction(private val dimensions: Int, private val realDimensions: Int,
                      semiInterval: Double, private val realTolerance: Double): OptimizationTestProblem() {
 
-    private val realInterval: DoubleInterval = DoubleInterval(-semiInterval, semiInterval, realTolerance)
+    private val realInterval: RealInterval = RealInterval(-semiInterval, semiInterval, realTolerance)
     private val integerInterval: IntegerInterval = IntegerInterval(-semiInterval.toInt(), semiInterval.toInt(), 1)
 
     init {

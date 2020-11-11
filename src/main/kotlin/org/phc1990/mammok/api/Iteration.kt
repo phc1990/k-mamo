@@ -1,4 +1,4 @@
-package org.phc1990.mammok.optimization
+package org.phc1990.mammok.api
 
 /**
  * An algorithm iteration. It contains information on:
@@ -22,12 +22,3 @@ interface Iteration {
     /** Set of optimal candidates that constitute this iteration. */
     val optimalSet: Set<Candidate>
 }
-
-/**
- * Internal [Iteration] implementation.
- *
- * @see Iteration
- * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
- */
-internal data class InternalIteration(  override val index: Int, override val stop: Boolean,
-                                        override val optimalSet: Set<Candidate>): Iteration

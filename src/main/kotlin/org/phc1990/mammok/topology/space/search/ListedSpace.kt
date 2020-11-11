@@ -1,7 +1,6 @@
-package org.phc1990.mammok.topology.space.implementation
+package org.phc1990.mammok.topology.space.search
 
 import org.phc1990.mammok.topology.space.FiniteSpace
-import com.intellij.util.containers.toArray
 
 /**
  * A [Space] constituted by a finite number of possibilities.

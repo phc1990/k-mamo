@@ -1,4 +1,4 @@
-package org.phc1990.mammok.utils.random
+package org.phc1990.mammok.random
 
 import java.util.Random
 
@@ -13,26 +13,26 @@ object Random {
     private val random = Random()
 
     /** Returns the underlying Java random instance. */
-    fun getJava(): Random = random
+    internal fun getJava(): Random = random
 
     /** Sets the [seed] of the random generator. */
     fun setSeed(seed: Long) = random.setSeed(seed)
 
     /** Returns a random uniformly-distributed double in the [0,1] interval. */
-    fun uniformDouble(): Double = random.nextDouble()
+    internal fun uniformDouble(): Double = random.nextDouble()
 
     /** Returns a random uniformly-distributed integer in the [0, [max]) interval (i.e. excluding [max]). */
-    fun uniformInteger(max: Int) = random.nextInt(max)
+    internal fun uniformInteger(max: Int) = random.nextInt(max)
 
     /** Returns a random uniformly-distributed integer in the [[min], [max]) interval (i.e. excluding [max]). */
-    fun uniformInteger(min: Int, max: Int) = min + random.nextInt(max - min)
+    internal fun uniformInteger(min: Int, max: Int) = min + random.nextInt(max - min)
 
     /**
      * Returns an iterator over a random non-repeated uniformly-distributed integer iterator in the [[min], [max])
      * interval (i.e. excluding [max]).
      */
-    fun nonRepeatingUniformInteger(min: Int, max: Int): Iterator<Int> = NonRepeatingInteger(min, max)
+    internal fun nonRepeatingUniformInteger(min: Int, max: Int): Iterator<Int> = NonRepeatingInteger(min, max)
 
     /** Returns a random uniformly distributed boolean in the [false, true] interval. */
-    fun uniformBoolean(): Boolean = random.nextBoolean()
+    internal fun uniformBoolean(): Boolean = random.nextBoolean()
 }

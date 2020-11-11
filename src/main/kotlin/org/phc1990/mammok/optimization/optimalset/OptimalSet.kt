@@ -1,6 +1,6 @@
 package org.phc1990.mammok.optimization.optimalset
 
-import org.phc1990.mammok.optimization.Candidate
+import org.phc1990.mammok.api.Candidate
 
 internal class OptimalSet(val prevalence: (c1: Candidate, c2: Candidate) -> Int,
                           val pruning: (set: Set<Candidate>) -> Unit) {

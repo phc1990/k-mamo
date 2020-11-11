@@ -1,32 +1,27 @@
-package org.phc1990.mammok.topology.space.implementation
+package org.phc1990.mammok.topology.space.search
 
+import org.phc1990.mammok.random.Random
 import org.phc1990.mammok.topology.space.BoundedSpace
-import org.phc1990.mammok.topology.space.FiniteSpace
 import org.phc1990.mammok.topology.space.LinearSpace
 import org.phc1990.mammok.topology.space.MetricSpace
 import kotlin.math.absoluteValue
-import kotlin.math.roundToInt
 
 /**
- * A [Space] representing an integer interval (e.g. [0,9] or [-1,1]). It implements both [LinearSpace] and
- * [FiniteSpace], the use of it as a [FiniteSpace] is recommended if the number of objects is 'small'.
+ * A [Space] representing a real interval (e.g. {-0.1,0.1}).
  *
  * References:
- * - [https://en.wikipedia.org/wiki/Interval_(mathematics)#Integer_intervals](https://en.wikipedia.org/wiki/Interval_(mathematics)#Integer_intervals)
+ * - [https://en.wikipedia.org/wiki/Interval_(mathematics)](https://en.wikipedia.org/wiki/Interval_(mathematics))
  *
- * @see FiniteSpace
  * @see LinearSpace
  * @see MetricSpace
  * @see BoundedSpace
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - May 25, 2020
  */
-class IntegerInterval(private val lowerBoundary: Int, private val upperBoundary: Int,
-                      private val neighborhoodRadius: Int = 0, private val loop: Boolean = false):
-        FiniteSpace<Int>, LinearSpace<Int>, MetricSpace<Int>, BoundedSpace<Int> {
+class RealInterval(private val lowerBoundary: Double, private val upperBoundary: Double,
+                   private val neighborhoodRadius: Double = 0.0, private val loop: Boolean = false):
+        LinearSpace<Double>, MetricSpace<Double>, BoundedSpace<Double> {
 
-
-    private val span: Int
-    private val size: Int
+    private val span: Double
 
     init {
         if (lowerBoundary > upperBoundary)
@@ -34,19 +29,17 @@ class IntegerInterval(private val lowerBoundary: Int, private val upperBoundary:
         if (neighborhoodRadius < 0)
             throw IllegalArgumentException("Neighborhood radius has to be greater or equal than 0.")
         span = upperBoundary - lowerBoundary
-        if (span == 0) {
+        if (span == 0.0) {
             throw IllegalArgumentException("Set is null.")
         }
-        size = span + 1
     }
 
-    override fun size() = size
-    override fun get(i: Int): Int = lowerBoundary + i
-    override fun scale(scalar: Double, t: Int): Int = (scalar * t).roundToInt();
-    override fun add(t1: Int, t2: Int): Int = t1 + t2
-    override fun metric(t1: Int, t2: Int): Double = (t1 - t2).toDouble().absoluteValue
+    override fun scale(scalar: Double, t: Double): Double = scalar * t
+    override fun add(t1: Double, t2: Double): Double = t1 + t2
+    override fun uniform(): Double = lowerBoundary + Random.uniformDouble() * (upperBoundary - lowerBoundary)
+    override fun metric(t1: Double, t2: Double): Double = (t1 - t2).absoluteValue
 
-    override fun clip(t: Int): Int {
+    override fun clip(t: Double): Double {
         if (!loop)
             return if (t < lowerBoundary) lowerBoundary else if (t > upperBoundary) upperBoundary else t
 
@@ -59,9 +52,9 @@ class IntegerInterval(private val lowerBoundary: Int, private val upperBoundary:
         return lowerBoundary + ((t - upperBoundary) % span)
     }
 
-    override fun neighbors(t: Int): Array<Int>? {
+    override fun neighbors(t: Double): Array<Double>? {
         if (neighborhoodRadius > 0) {
-            var neighbors = arrayOf<Int>()
+            var neighbors = arrayOf<Double>()
             clip(t - neighborhoodRadius).also { if (it != t) neighbors += it }
             clip(t + neighborhoodRadius).also { if (it != t) neighbors += it }
             return neighbors

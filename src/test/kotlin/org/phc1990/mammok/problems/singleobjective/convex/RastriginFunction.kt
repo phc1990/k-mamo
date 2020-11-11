@@ -1,10 +1,10 @@
 package org.phc1990.mammok.problems.singleobjective.convex
 
-import org.phc1990.mammok.optimization.Candidate
-import org.phc1990.mammok.optimization.Iteration
+import org.phc1990.mammok.api.Candidate
+import org.phc1990.mammok.api.Iteration
 import org.phc1990.mammok.optimization.OptimizationCriterion
 import org.phc1990.mammok.problems.OptimizationTestProblem
-import org.phc1990.mammok.topology.space.implementation.DoubleInterval
+import org.phc1990.mammok.topology.space.search.RealInterval
 
 /**
  * Rastrigin function.
@@ -13,7 +13,7 @@ import org.phc1990.mammok.topology.space.implementation.DoubleInterval
  */
 class RastriginFunction(private val dimensions: Int, private val tolerance: Double): OptimizationTestProblem() {
 
-    private val interval = DoubleInterval(-5.12, 5.12, tolerance, false)
+    private val interval = RealInterval(-5.12, 5.12, tolerance, false)
 
     init {
         variables = Array(dimensions){interval}

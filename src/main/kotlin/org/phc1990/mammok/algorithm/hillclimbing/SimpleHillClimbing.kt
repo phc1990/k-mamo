@@ -1,9 +1,10 @@
 package org.phc1990.mammok.algorithm.hillclimbing
 
 import org.phc1990.mammok.algorithm.AbstractAlgorithm
-import org.phc1990.mammok.optimization.*
+import org.phc1990.mammok.api.Candidate
+import org.phc1990.mammok.api.Iteration
 import org.phc1990.mammok.optimization.InternalCandidate
-import org.phc1990.mammok.optimization.InternalIteration
+import org.phc1990.mammok.algorithm.InternalIteration
 import org.phc1990.mammok.optimization.optimalset.OptimalSet
 import org.phc1990.mammok.topology.neighborhood.RandomlySortedNeighborhood
 import org.phc1990.mammok.topology.space.Space

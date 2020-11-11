@@ -2,7 +2,7 @@ package org.phc1990.mammok.algorithm.purerandomsearch
 /*
 import org.phc1990.mammok.optimization.*
 import org.phc1990.mammok.optimization.InternalCandidate
-import org.phc1990.mammok.optimization.InternalIteration
+import org.phc1990.mammok.algorithm.InternalIteration
 import org.phc1990.mammok.optimization.ObjectiveFactory
 import org.phc1990.mammok.optimization.VariableFactory
 import org.phc1990.mammok.topology.space.Space

@@ -1,8 +1,8 @@
 package org.phc1990.mammok.topology.neighborhood
 
-import org.phc1990.mammok.optimization.Candidate
+import org.phc1990.mammok.api.Candidate
 import org.phc1990.mammok.optimization.InternalCandidate
-import org.phc1990.mammok.utils.random.Random
+import org.phc1990.mammok.random.Random
 import org.phc1990.mammok.topology.space.Space
 
 /**
@@ -14,7 +14,6 @@ import org.phc1990.mammok.topology.space.Space
 internal class RandomlySortedNeighborhood: Neighborhood {
 
     private val iterationIndex: Int
-    private var nextCandidateIndex: Int = 0
 
     /** A matrix containing each of the neighbor values for each variable. This contains all the potential values for
      * each variable, that, in combination, can spawn any neighbor. (e.g. {{-1,0,+1}, {"a","b"}}). For each variable,
@@ -67,12 +66,8 @@ internal class RandomlySortedNeighborhood: Neighborhood {
      * one of the variables. For instance, {2,0} will select the third ([2]) value for the first variable and the first
      * value ([0]) for the second variable.
      */
-    private fun candidate(indexes: IntArray): Candidate {
-        val candidate = InternalCandidate(iterationIndex, nextCandidateIndex,
-                Array(indexes.size) { i -> values[i][indexes[i]]})
-        nextCandidateIndex++
-        return candidate
-    }
+    private fun candidate(indexes: IntArray): Candidate = InternalCandidate(
+            iterationIndex, Array(indexes.size) { i -> values[i][indexes[i]]})
 
     /**
      * Translates the ordinal of a neighbor into its corresponding indexes for each one of the variables.

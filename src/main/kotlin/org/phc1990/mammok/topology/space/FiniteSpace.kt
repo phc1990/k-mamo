@@ -1,6 +1,6 @@
 package org.phc1990.mammok.topology.space
 
-import org.phc1990.mammok.utils.random.Random
+import org.phc1990.mammok.random.Random
 
 /**
  * A finite [Space]. Its set contains a finite number of objects. Besides the inherited operations, its structure also
