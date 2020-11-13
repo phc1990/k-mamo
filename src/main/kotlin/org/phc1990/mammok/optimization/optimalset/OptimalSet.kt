@@ -1,9 +1,11 @@
 package org.phc1990.mammok.optimization.optimalset
 
 import org.phc1990.mammok.api.Candidate
+import org.phc1990.mammok.api.CandidateComparator
+import org.phc1990.mammok.api.OptimalSetPruner
 
-internal class OptimalSet(val prevalence: (c1: Candidate, c2: Candidate) -> Int,
-                          val pruning: (set: Set<Candidate>) -> Unit) {
+internal class OptimalSet(private val comparator: CandidateComparator,
+                          private val pruner: OptimalSetPruner) {
     private var set: MutableSet<Candidate> = mutableSetOf()
 
     // TODO take a look at algorithm 19.4
@@ -11,8 +13,8 @@ internal class OptimalSet(val prevalence: (c1: Candidate, c2: Candidate) -> Int,
 
     fun update(candidate: Candidate): Boolean {
         for (old in set) {
-            val prevalence = prevalence(old, candidate)
-            if (prevalence > 1) {
+            val prevalence = comparator.compare(old, candidate)
+            if (prevalence > 0) {
                 set.remove(old)
             } else {
                 return false
@@ -22,6 +24,6 @@ internal class OptimalSet(val prevalence: (c1: Candidate, c2: Candidate) -> Int,
         return true
     }
 
-    fun prune(): Set<Candidate> { pruning(set); return set() }
+    fun prune(): Set<Candidate> { pruner.prune(set); return set() }
     fun set(): Set<Candidate> = set
 }

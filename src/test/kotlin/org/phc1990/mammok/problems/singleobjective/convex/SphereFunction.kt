@@ -1,10 +1,16 @@
 package org.phc1990.mammok.problems.singleobjective.convex
 
 import org.phc1990.mammok.api.Candidate
+import org.phc1990.mammok.api.CandidateComparator
+import org.phc1990.mammok.api.Iteration
+import org.phc1990.mammok.api.OptimalSetPruner
 import org.phc1990.mammok.problems.OptimizationTestProblem
 import org.phc1990.mammok.topology.space.search.RealInterval
 import org.phc1990.mammok.topology.space.search.IntegerInterval
+import org.phc1990.mammok.utils.CandidateComparators
+import org.phc1990.mammok.utils.OptimalSetPruners
 import kotlin.math.pow
+import kotlin.test.assertEquals
 
 /**
  * Sphere function.
@@ -21,7 +27,8 @@ import kotlin.math.pow
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Nov 6, 2020
  */
 class SphereFunction(private val dimensions: Int, private val realDimensions: Int,
-                     semiInterval: Double, private val realTolerance: Double): OptimizationTestProblem() {
+                     semiInterval: Double, private val realTolerance: Double):
+        OptimizationTestProblem(CandidateComparators.getWeightedSum(1.0), OptimalSetPruners.getNone()) {
 
     private val realInterval: RealInterval = RealInterval(-semiInterval, semiInterval, realTolerance)
     private val integerInterval: IntegerInterval = IntegerInterval(-semiInterval.toInt(), semiInterval.toInt(), 1)
@@ -45,15 +52,18 @@ class SphereFunction(private val dimensions: Int, private val realDimensions: In
                 candidate.getVariable(i, Int::class.java).toDouble().pow(2.0)
             }
         }
-        candidate.objectives[0] = f
+        candidate.objectives += f
     }
 
-    override fun validateCandidate(candidate: Candidate) {
-        for (i in 0 until dimensions) {
-            if (i < realDimensions) {
-                validateVariable(realInterval, candidate.getVariable(i, Double::class.java), 0.0, realTolerance)
-            } else {
-                validateVariable(integerInterval, candidate.getVariable(i, Int::class.java), 0, 0.0)
+    override fun validate(iteration: Iteration) {
+        assertEquals(iteration.optimalSet.size, 1)
+        iteration.optimalSet.forEach {
+            for (i in 0 until dimensions) {
+                if (i < realDimensions) {
+                    validateVariable(i, realInterval, it.getVariable(i, Double::class.java), 0.0, realTolerance)
+                } else {
+                    validateVariable(i, integerInterval, it.getVariable(i, Int::class.java), 0, 0.0)
+                }
             }
         }
     }

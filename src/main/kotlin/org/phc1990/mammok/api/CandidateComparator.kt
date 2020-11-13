@@ -1,9 +1,5 @@
 package org.phc1990.mammok.api
 
-interface CandidateComparator {
-
+interface CandidateComparator: Comparator<Candidate> {
     val name: String
-
-    fun prevalence(c1: Candidate, c2: Candidate): Int
-
 }

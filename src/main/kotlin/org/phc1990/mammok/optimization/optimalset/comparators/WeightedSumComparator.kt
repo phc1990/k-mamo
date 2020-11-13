@@ -12,7 +12,7 @@ class WeightedSumComparator(private val weights: DoubleArray): CandidateComparat
 
     override val name: String = "Weighted Sum"
 
-    override fun prevalence(c1: Candidate, c2: Candidate): Int {
+    override fun compare(c1: Candidate, c2: Candidate): Int {
         var s1 = 0.0
         var s2 = 0.0
         for (i in c1.objectives.indices) { weights[i].also {s1 += it * c1.objectives[i]; s2 += it * c2.objectives[i] }}

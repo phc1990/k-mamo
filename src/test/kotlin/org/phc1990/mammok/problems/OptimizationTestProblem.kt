@@ -8,6 +8,8 @@ import org.phc1990.mammok.utils.IterationProcessors
 import org.phc1990.mammok.utils.OptimalSetPruners
 import java.lang.Appendable
 import kotlin.math.abs
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * Optimization test problem.
@@ -15,37 +17,45 @@ import kotlin.math.abs
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Nov 6, 2020
  */
 abstract class OptimizationTestProblem(
-        private val name: String,
         private val comparator: CandidateComparator,
-        private val pruner: OptimalSetPruner = OptimalSetPruners.getNone()): CandidateEvaluator {
+        private val pruner: OptimalSetPruner): CandidateEvaluator {
 
+    protected lateinit var name: String
     protected lateinit var variables: Array<*>
 
     @Synchronized
     fun <S: Space<Any>> solve(algorithm: Algorithm<S>) {
         variables.forEach { algorithm.addVariable(it as S) }
-        algorithm.run(this, comparator, pruner, IterationProcessors.getLogger())
+        algorithm.run(this, comparator, pruner, getProcessor(algorithm.name))
     }
 
     /** Validates the final result. */
     protected abstract fun validate(iteration: Iteration)
 
     /** Returns true if the variable is within the margin distance of the expected value. */
-    protected fun <T> validateVariable( space: MetricSpace<T>, actual: T, expected: T,
-                                        margin: Double): Boolean = abs(space.metric(actual, expected)) <= margin
+    protected fun <T> validateVariable( index: Int, space: MetricSpace<T>, actual: T, expected: T,
+                                        margin: Double) {
+        assertTrue(abs(space.metric(actual, expected)) <= margin,
+                "Variable $index, expected: $expected, actual: $actual")
+    }
 
-    private fun getProcessor(appendable: Appendable = System.out): IterationProcessor = object : IterationProcessor {
+    private fun getProcessor(algorithmName: String, appendable: Appendable = System.out): IterationProcessor = object : IterationProcessor {
         private  val startTime = System.currentTimeMillis()
+
+        init {
+            appendable.appendln("********")
+            appendable.appendln("Test problem           : $name")
+            appendable.appendln("Algorithm              : $algorithmName")
+            appendable.appendln("Candidate comparator   : ${comparator.name}")
+            appendable.appendln("Optimal set pruner     : ${pruner.name}")
+        }
 
         override fun process(iteration: Iteration): Boolean {
             if (iteration.stop) {
-                appendable.appendln("********")
-                appendable.appendln("Test problem   : $name")
-                appendable.appendln("Comparator     : ${comparator.name}")
-                appendable.appendln("Pruner         : ${pruner.name}")
-                appendable.appendln("Comp. Time [s] : ${1E-3 * (System.currentTimeMillis()-startTime)}")
+                appendable.appendln("Stopped at iteration   : ${iteration.index}")
                 validate(iteration)
-                appendable.appendln("Validation     : OK")
+                appendable.appendln("Validation             : OK")
+                appendable.appendln("Computational time [s] : ${1E-3 * (System.currentTimeMillis()-startTime)}")
             }
             return false
         }

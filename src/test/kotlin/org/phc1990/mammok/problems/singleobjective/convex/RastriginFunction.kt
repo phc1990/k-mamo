@@ -2,10 +2,9 @@ package org.phc1990.mammok.problems.singleobjective.convex
 
 import org.phc1990.mammok.api.Candidate
 import org.phc1990.mammok.api.Iteration
-import org.phc1990.mammok.optimization.OptimizationCriterion
 import org.phc1990.mammok.problems.OptimizationTestProblem
 import org.phc1990.mammok.topology.space.search.RealInterval
-
+/*
 /**
  * Rastrigin function.
  *
@@ -36,3 +35,4 @@ class RastriginFunction(private val dimensions: Int, private val tolerance: Doub
         }
     }
 }
+*/

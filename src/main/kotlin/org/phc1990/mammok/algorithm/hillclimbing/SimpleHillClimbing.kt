@@ -1,10 +1,9 @@
 package org.phc1990.mammok.algorithm.hillclimbing
 
 import org.phc1990.mammok.algorithm.AbstractAlgorithm
-import org.phc1990.mammok.api.Candidate
-import org.phc1990.mammok.api.Iteration
 import org.phc1990.mammok.optimization.InternalCandidate
 import org.phc1990.mammok.algorithm.InternalIteration
+import org.phc1990.mammok.api.*
 import org.phc1990.mammok.optimization.optimalset.OptimalSet
 import org.phc1990.mammok.topology.neighborhood.RandomlySortedNeighborhood
 import org.phc1990.mammok.topology.space.Space
@@ -13,33 +12,35 @@ class SimpleHillClimbing(private val maxIterations: Int? = null): AbstractAlgori
 
     override val name: String = "Simple Hill Climbing"
 
-    override fun run(evaluation: (candidate: Candidate) -> Unit, prevalence: (c1: Candidate, c2: Candidate) -> Int,
-                     pruning: (set: Set<Candidate>) -> Unit, process: (iteration: Iteration) -> Boolean) {
+    override fun run(evaluator: CandidateEvaluator,
+                     comparator: CandidateComparator,
+                     pruner: OptimalSetPruner,
+                     processor: IterationProcessor) {
 
         var i = 0
         var stop = false
 
         // Initialise point
         var best: Candidate = InternalCandidate.uniform(0, variables)
-        evaluation(best)
+        evaluator.evaluate(best)
 
         // Initialise optimal set
-        val optimalSet = OptimalSet(prevalence, pruning)
+        val optimalSet = OptimalSet(comparator, pruner)
         optimalSet.extract(setOf(best))
 
         // Initialise process
-        stop = process(InternalIteration(0, stop, optimalSet.prune()))
+        stop = processor.process(InternalIteration(0, stop, optimalSet.prune()))
 
         while(!stop) {
 
             // Create neighborhood
-            val neighborIterator = RandomlySortedNeighborhood(best, variables)
+            val neighborIterator = RandomlySortedNeighborhood(optimalSet.set().first(), variables)
             var foundBetter = false
 
             while(neighborIterator.hasNext()) {
 
                 val candidate = neighborIterator.next()
-                evaluation(candidate)
+                evaluator.evaluate(candidate)
 
                 foundBetter = optimalSet.update(candidate)
                 // We have already found a better candidate, neighbour search is stop
@@ -53,10 +54,8 @@ class SimpleHillClimbing(private val maxIterations: Int? = null): AbstractAlgori
             if (!foundBetter) { stop = true }
 
             // Process iteration
-            if (process(InternalIteration(i, stop, optimalSet.prune()))) {stop = true}
+            if (processor.process(InternalIteration(i, stop, optimalSet.prune()))) {stop = true}
             i++
         }
     }
-
-
 }
