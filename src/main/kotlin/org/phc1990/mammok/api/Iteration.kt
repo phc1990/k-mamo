@@ -13,9 +13,6 @@ package org.phc1990.mammok.api
  */
 interface Iteration {
 
-    /** The index of the instance. */
-    val index: Int
-
     /** Flag indicating whether a internal stop criterion was met. */
     val stop: Boolean
 

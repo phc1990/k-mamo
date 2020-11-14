@@ -4,9 +4,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.phc1990.mammok.algorithm.AbstractAlgorithm
-import org.phc1990.mammok.algorithm.hillclimbing.SimpleHillClimbing
-import org.phc1990.mammok.algorithm.hillclimbing.SteepestAscentHillClimbing
+import org.phc1990.mammok.algorithm.hillclimbing.HillClimbing
+import org.phc1990.mammok.algorithm.hillclimbing.StochasticHillClimbing
 import org.phc1990.mammok.problems.singleobjective.convex.SphereFunction
+import org.phc1990.mammok.problems.singleobjective.nonconvex.RastriginFunction
 import org.phc1990.mammok.random.Random
 
 @RunWith(Parameterized::class)
@@ -20,24 +21,42 @@ class ProblemTestList(private val problem: OptimizationTestProblem,
             return listOf(
 
                     // Sphere Function, 3 real dimensions
-                    arrayOf(SphereFunction(3, 3, 10.0, 0.01),
+                    arrayOf(SphereFunction(3, 3, 10.0, 0.001),
                             arrayOf(
-                                    SimpleHillClimbing(),
-                                    SteepestAscentHillClimbing()
+                                    HillClimbing(false),
+                                    HillClimbing(true ),
+                                    StochasticHillClimbing(false, 100),
+                                    StochasticHillClimbing(true, 100)
                             )),
 
                     // Sphere Function, 3 integer dimensions
-                    arrayOf(SphereFunction(3, 0, 10.0, 0.01),
+                    arrayOf(SphereFunction(3, 0, 10000.0, 0.001),
                             arrayOf(
-                                    SimpleHillClimbing(),
-                                    SteepestAscentHillClimbing()
+                                    HillClimbing(false),
+                                    HillClimbing(true),
+                                    StochasticHillClimbing(false, 100),
+                                    StochasticHillClimbing(true, 100)
                             )),
 
                     // Sphere Function, 2 real, 1 integer dimensions
-                    arrayOf(SphereFunction(3, 2, 10.0, 0.01),
+                    arrayOf(SphereFunction(3, 2, 10.0, 0.001),
                             arrayOf(
-                                    SimpleHillClimbing(),
-                                    SteepestAscentHillClimbing()
+                                    HillClimbing(false),
+                                    HillClimbing(true),
+                                    StochasticHillClimbing(false, 100),
+                                    StochasticHillClimbing(true, 100)
+                            )),
+                    // Rastrigin Function, 2 dimensions
+                    arrayOf(RastriginFunction(2, 0.001),
+                            arrayOf(
+                                    StochasticHillClimbing(false,100000),
+                                    StochasticHillClimbing(true,100000)
+                            )),
+                    // Rastrigin Function, 3 dimensions
+                    arrayOf(RastriginFunction(3, 0.001),
+                            arrayOf(
+                                    StochasticHillClimbing(false, 1E7.toInt()),
+                                    StochasticHillClimbing(true, 1E7.toInt())
                             ))
             )
         }

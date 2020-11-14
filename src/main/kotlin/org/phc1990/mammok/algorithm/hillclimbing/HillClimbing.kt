@@ -8,27 +8,26 @@ import org.phc1990.mammok.optimization.optimalset.OptimalSet
 import org.phc1990.mammok.topology.neighborhood.RandomlySortedNeighborhood
 import org.phc1990.mammok.topology.space.Space
 
-class SteepestAscentHillClimbing(private val maxIterations: Int? = null): AbstractAlgorithm<Space<Any>>() {
+class HillClimbing(private val steepestAscent: Boolean,
+                   private val maxIterations: Int? = null): AbstractAlgorithm<Space<Any>>() {
 
-    override val name: String = "Steepest Ascent Hill Climbing"
+    override val name: String = if (steepestAscent) "Steepest Ascent Hill Climbing" else "Simple Hill Climbing"
+
     override fun run(evaluator: CandidateEvaluator,
                      comparator: CandidateComparator,
                      pruner: OptimalSetPruner,
                      processor: IterationProcessor) {
 
+        // Initialisation
         var i = 0
-        var stop = false
-
-        // Initialise point
-        var best: Candidate = InternalCandidate.uniform(0, variables)
-        evaluator.evaluate(best)
-
-        // Initialise optimal set
         val optimalSet = OptimalSet(comparator, pruner)
-        optimalSet.extract(setOf(best))
 
-        // Initialise process
-        stop = processor.process(InternalIteration(0, stop, optimalSet.prune()))
+        InternalCandidate.uniform(variables).also {
+            evaluator.evaluate(it)
+            optimalSet.extract(setOf(it))
+        }
+
+        var stop = processor.process(InternalIteration(false, optimalSet.prune()))
 
         while(!stop) {
 
@@ -41,19 +40,23 @@ class SteepestAscentHillClimbing(private val maxIterations: Int? = null): Abstra
                 val candidate = neighborIterator.next()
                 evaluator.evaluate(candidate)
 
-                // Store whether a better candidate has been found, but keep exploring the entire neighborhood.
-                if (optimalSet.update(candidate)) foundBetter = true
+                // Store whether a better candidate has been found.
+                if (optimalSet.update(candidate)) {
+                    foundBetter = true
+
+                    // Simple Hill Climbing would stop the search here
+                    if (!steepestAscent) { break }
+                }
             }
 
             // Check iterations stop criterion
             maxIterations?.let { stop = (i >= maxIterations-1) }
 
-            // If we have not found a better candidate in the neighbour hood, we are locally stuck
+            // If we have not found a better candidate in the neighborhood
             if (!foundBetter) { stop = true }
 
             // Process iteration
-            if (processor.process(InternalIteration(i, stop, optimalSet.prune()))) {stop = true}
-            i++
+            if (processor.process(InternalIteration(stop, optimalSet.prune()))) break else i++
         }
     }
 }

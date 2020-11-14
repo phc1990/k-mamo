@@ -20,11 +20,13 @@ abstract class OptimizationTestProblem(
         private val comparator: CandidateComparator,
         private val pruner: OptimalSetPruner): CandidateEvaluator {
 
+    protected var numberOfEvaluations: Int = 0
     protected lateinit var name: String
     protected lateinit var variables: Array<*>
 
     @Synchronized
     fun <S: Space<Any>> solve(algorithm: Algorithm<S>) {
+        numberOfEvaluations = 0
         variables.forEach { algorithm.addVariable(it as S) }
         algorithm.run(this, comparator, pruner, getProcessor(algorithm.name))
     }
@@ -33,9 +35,9 @@ abstract class OptimizationTestProblem(
     protected abstract fun validate(iteration: Iteration)
 
     /** Returns true if the variable is within the margin distance of the expected value. */
-    protected fun <T> validateVariable( index: Int, space: MetricSpace<T>, actual: T, expected: T,
+    protected fun <T> validateVariable( index: Int, space: MetricSpace<T>, expected: T, actual: T,
                                         margin: Double) {
-        assertTrue(abs(space.metric(actual, expected)) <= margin,
+        assertTrue(abs(space.metric(expected, actual)) <= margin,
                 "Variable $index, expected: $expected, actual: $actual")
     }
 
@@ -52,7 +54,7 @@ abstract class OptimizationTestProblem(
 
         override fun process(iteration: Iteration): Boolean {
             if (iteration.stop) {
-                appendable.appendln("Stopped at iteration   : ${iteration.index}")
+                appendable.appendln("Number of evaluations  : $numberOfEvaluations")
                 validate(iteration)
                 appendable.appendln("Validation             : OK")
                 appendable.appendln("Computational time [s] : ${1E-3 * (System.currentTimeMillis()-startTime)}")

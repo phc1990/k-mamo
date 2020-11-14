@@ -26,4 +26,8 @@ internal class OptimalSet(private val comparator: CandidateComparator,
 
     fun prune(): Set<Candidate> { pruner.prune(set); return set() }
     fun set(): Set<Candidate> = set
+    fun clear(): OptimalSet {
+        set.clear()
+        return this
+    }
 }

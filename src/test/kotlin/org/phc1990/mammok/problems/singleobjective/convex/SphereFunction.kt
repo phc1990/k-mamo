@@ -53,6 +53,7 @@ class SphereFunction(private val dimensions: Int, private val realDimensions: In
             }
         }
         candidate.objectives += f
+        numberOfEvaluations++
     }
 
     override fun validate(iteration: Iteration) {
@@ -60,9 +61,9 @@ class SphereFunction(private val dimensions: Int, private val realDimensions: In
         iteration.optimalSet.forEach {
             for (i in 0 until dimensions) {
                 if (i < realDimensions) {
-                    validateVariable(i, realInterval, it.getVariable(i, Double::class.java), 0.0, realTolerance)
+                    validateVariable(i, realInterval, 0.0, it.getVariable(i, Double::class.java), realTolerance)
                 } else {
-                    validateVariable(i, integerInterval, it.getVariable(i, Int::class.java), 0, 0.0)
+                    validateVariable(i, integerInterval, 0, it.getVariable(i, Int::class.java), 0.0)
                 }
             }
         }

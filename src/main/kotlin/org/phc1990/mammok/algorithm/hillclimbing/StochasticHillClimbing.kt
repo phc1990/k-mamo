@@ -1,38 +1,46 @@
 package org.phc1990.mammok.algorithm.hillclimbing
-/*
-import org.phc1990.mammok.optimization.*
+
+import org.phc1990.mammok.algorithm.AbstractAlgorithm
 import org.phc1990.mammok.optimization.InternalCandidate
 import org.phc1990.mammok.algorithm.InternalIteration
-import org.phc1990.mammok.optimization.VariableFactory
+import org.phc1990.mammok.api.*
+import org.phc1990.mammok.optimization.optimalset.OptimalSet
 import org.phc1990.mammok.topology.neighborhood.RandomlySortedNeighborhood
-import org.phc1990.mammok.topology.space.LinearSpace
 import org.phc1990.mammok.topology.space.Space
 
-class StochasticHillClimbing(private val objective: Objective,
-                             private val selectionFunction: (improvement: Double) -> Boolean,
-                             private val maxIterations: Int? = null): Algorithm<LinearSpace<*>> {
+class StochasticHillClimbing(private val steepestAscent: Boolean,
+                             private val maxStochasticRetries: Int,
+                             private val maxIterations: Int? = null): AbstractAlgorithm<Space<Any>>() {
 
-    override val name: String = "Stochastic Hill Climbing"
-    private var variables: Array<Variable<*>> = arrayOf()
-    private lateinit var best: Candidate
+    override val name: String = if (steepestAscent)
+        "Stochastic Steepest Ascent Hill Climbing" else "Stochastic Simple Hill Climbing"
 
-    fun <T> addVariable(name: String, space: Space<T>): Variable<T> =
-            VariableFactory.get(name, space).also { variables += it }
+    override fun run(evaluator: CandidateEvaluator,
+                     comparator: CandidateComparator,
+                     pruner: OptimalSetPruner,
+                     processor: IterationProcessor) {
 
-    override fun solve(evaluator: BlackBoxEvaluator, processor: IterationProcessor) {
-
-        processor.initialize()
-
+        // Initialisation
         var i = 0
-        var stop = false
+        var j = 0
+        val optimalSet = OptimalSet(comparator, pruner)
+        var randomRestart = false
+
+        InternalCandidate.uniform(variables).also {
+            evaluator.evaluate(it)
+            optimalSet.extract(setOf(it))
+        }
+
+        var stop = processor.process(InternalIteration(false, optimalSet.prune()))
+
         while(!stop) {
 
-            // Initialise best candidate
-            if (best == null) {
-                best =  InternalCandidate.uniform(0, 0, variables) }
-
             // Create neighborhood
-            val neighborIterator = RandomlySortedNeighborhood(best.iterationIndex, best.variables)
+            val neighborIterator = if (randomRestart) {
+                randomRestart = false
+                RandomlySortedNeighborhood(InternalCandidate.uniform(variables), variables, true)
+            } else RandomlySortedNeighborhood(optimalSet.set().first(), variables)
+
             var foundBetter = false
 
             while(neighborIterator.hasNext()) {
@@ -40,22 +48,26 @@ class StochasticHillClimbing(private val objective: Objective,
                 val candidate = neighborIterator.next()
                 evaluator.evaluate(candidate)
 
-                if (candidate.challenge(best, objective)) {
-                    foundBetter = selectionFunction.invoke(candidate.improvement(best, objective))
-                    if (foundBetter) {
-                        best = candidate
-                        // We have already found a better candidate, neighbour search is stop
-                        break
-                    }
+                // Store whether a better candidate has been found.
+                if (optimalSet.update(candidate)) {
+                    foundBetter = true
+
+                    // Simple Hill Climbing would stop the search here
+                    if (!steepestAscent) { break }
                 }
             }
 
+            // Check iterations stop criterion
             maxIterations?.let { stop = (i >= maxIterations-1) }
-            if (!foundBetter) {stop = true}
-            if (processor.process(InternalIteration(i, stop, listOf(best)))) {stop = true}
-            i++
+
+            // If we have not found a better candidate we might trigger a random restart
+            if (!foundBetter) {
+                if (j == maxStochasticRetries) {stop = true} else {randomRestart = true}
+                j++
+            }
+
+            // Process iteration
+            if (processor.process(InternalIteration(stop, optimalSet.prune()))) break else i++
         }
     }
 }
-
-*/

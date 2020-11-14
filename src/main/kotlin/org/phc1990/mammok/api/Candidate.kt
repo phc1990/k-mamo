@@ -7,9 +7,7 @@ package org.phc1990.mammok.api
  */
 interface Candidate {
 
-    /** The algorithm iteration to which this instance belongs. */
-    val iterationIndex: Int
-
+    /** Returns the number of variables. */
     fun variablesSize(): Int
 
     /** Returns the variable value. */

@@ -11,8 +11,9 @@ object IterationProcessors {
     }
 
     fun getLogger(appendable: Appendable = System.out): IterationProcessor = object : IterationProcessor {
+        private var i: Int = 1
         override fun process(iteration: Iteration): Boolean {
-            appendable.appendln("Iteration: ${iteration.index}...")
+            appendable.appendln("Iteration: $iteration...")
             if (iteration.stop) {
                 appendable.appendln("********")
                 appendable.appendln("Algorithm stopped!")
@@ -27,6 +28,7 @@ object IterationProcessors {
                     i++
                 }
             }
+            i++
             return false
         }
     }

@@ -13,8 +13,6 @@ import org.phc1990.mammok.topology.space.Space
  */
 internal class RandomlySortedNeighborhood: Neighborhood {
 
-    private val iterationIndex: Int
-
     /** A matrix containing each of the neighbor values for each variable. This contains all the potential values for
      * each variable, that, in combination, can spawn any neighbor. (e.g. {{-1,0,+1}, {"a","b"}}). For each variable,
      * the first value [0] is that of the point. */
@@ -26,10 +24,7 @@ internal class RandomlySortedNeighborhood: Neighborhood {
     /** An iterator that provides the next neighbor ordinal. */
     private val ordinalIterator: Iterator<Int>
 
-    constructor(candidate: Candidate, variables: Array<Space<Any>>) {
-
-        // Set the iteration index for the neighbors
-        iterationIndex = candidate.iterationIndex + 1
+    constructor(candidate: Candidate, variables: Array<Space<Any>>, includeCandidate: Boolean = false) {
 
         for (i in variables.indices) {
             // Neighbors array
@@ -54,8 +49,8 @@ internal class RandomlySortedNeighborhood: Neighborhood {
             totalNeighbors *= size
         }
 
-        // Exclude ordinal [0] as it would translate into the point itself
-        ordinalIterator = Random.nonRepeatingUniformInteger(1, totalNeighbors)
+        // Exclude ordinal [0] if the point itself is to be excluded
+        ordinalIterator = Random.nonRepeatingUniformInteger(if (includeCandidate) 0 else 1, totalNeighbors)
     }
 
     override fun hasNext(): Boolean = ordinalIterator.hasNext()
@@ -66,8 +61,8 @@ internal class RandomlySortedNeighborhood: Neighborhood {
      * one of the variables. For instance, {2,0} will select the third ([2]) value for the first variable and the first
      * value ([0]) for the second variable.
      */
-    private fun candidate(indexes: IntArray): Candidate = InternalCandidate(
-            iterationIndex, Array(indexes.size) { i -> values[i][indexes[i]]})
+    private fun candidate(indexes: IntArray): Candidate =
+            InternalCandidate(Array(indexes.size) { i -> values[i][indexes[i]]})
 
     /**
      * Translates the ordinal of a neighbor into its corresponding indexes for each one of the variables.
