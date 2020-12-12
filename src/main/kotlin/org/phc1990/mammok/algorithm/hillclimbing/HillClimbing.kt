@@ -22,7 +22,7 @@ class HillClimbing(private val steepestAscent: Boolean,
         var i = 0
         val optimalSet = OptimalSet(comparator, pruner)
 
-        InternalCandidate.uniform(variables).also {
+        InternalCandidate.uniform(searchSpaces).also {
             evaluator.evaluate(it)
             optimalSet.extract(setOf(it))
         }
@@ -32,7 +32,7 @@ class HillClimbing(private val steepestAscent: Boolean,
         while(!stop) {
 
             // Create neighborhood
-            val neighborIterator = RandomlySortedNeighborhood(optimalSet.set().first(), variables)
+            val neighborIterator = RandomlySortedNeighborhood(optimalSet.set().first(), searchSpaces)
             var foundBetter = false
 
             while(neighborIterator.hasNext()) {

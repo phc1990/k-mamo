@@ -24,9 +24,9 @@ internal class RandomlySortedNeighborhood: Neighborhood {
     /** An iterator that provides the next neighbor ordinal. */
     private val ordinalIterator: Iterator<Int>
 
-    constructor(candidate: Candidate, variables: Array<Space<Any>>, includeCandidate: Boolean = false) {
+    constructor(candidate: Candidate, spaces: List<Space<Any>>, includeCandidate: Boolean = false) {
 
-        for (i in variables.indices) {
+        for (i in spaces.indices) {
             // Neighbors array
             var array = arrayOf<Any>()
 
@@ -37,7 +37,7 @@ internal class RandomlySortedNeighborhood: Neighborhood {
             array += point
 
             // Add the neighbors to the point (index 1,2,...)
-            variables[i].neighbors(point)?.forEach { n -> array += n }
+            spaces[i].neighbors(point)?.forEach { n -> array += n }
 
             sizes += array.size
             values += array

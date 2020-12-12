@@ -9,7 +9,7 @@ import org.phc1990.mammok.topology.space.Space
  * @see Candidate
  * @author [Pau Hebrero Casasayas](https://github.com/phc1990) - Jun 1, 2020
  */
-internal class InternalCandidate(private val variables: Array<*>): Candidate {
+internal class InternalCandidate(internal val variables: Array<*>): Candidate {
 
     override var objectives: DoubleArray = DoubleArray(0)
     override fun variablesSize(): Int = variables.size
@@ -20,7 +20,7 @@ internal class InternalCandidate(private val variables: Array<*>): Candidate {
     companion object {
 
         /** Returns a new uniformly distributed generated instance. */
-        fun uniform(variableSpaces: Array<Space<Any>>): InternalCandidate =
+        fun uniform(variableSpaces: List<Space<Any>>): InternalCandidate =
                 InternalCandidate(Array(variableSpaces.size){ index -> variableSpaces[index].uniform()})
     }
 }

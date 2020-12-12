@@ -26,7 +26,7 @@ class StochasticHillClimbing(private val steepestAscent: Boolean,
         val optimalSet = OptimalSet(comparator, pruner)
         var randomRestart = false
 
-        InternalCandidate.uniform(variables).also {
+        InternalCandidate.uniform(searchSpaces).also {
             evaluator.evaluate(it)
             optimalSet.extract(setOf(it))
         }
@@ -38,8 +38,8 @@ class StochasticHillClimbing(private val steepestAscent: Boolean,
             // Create neighborhood
             val neighborIterator = if (randomRestart) {
                 randomRestart = false
-                RandomlySortedNeighborhood(InternalCandidate.uniform(variables), variables, true)
-            } else RandomlySortedNeighborhood(optimalSet.set().first(), variables)
+                RandomlySortedNeighborhood(InternalCandidate.uniform(searchSpaces), searchSpaces, true)
+            } else RandomlySortedNeighborhood(optimalSet.set().first(), searchSpaces)
 
             var foundBetter = false
 
